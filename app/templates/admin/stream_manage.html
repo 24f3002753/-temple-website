@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+
+{% block title %}थेट आरती व्यवस्थापन | Admin Live Aarti{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">प्रशासक कक्ष</a></li>
+                <li class="breadcrumb-item active" aria-current="page">थेट आरती व्यवस्थापन</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <h1 class="h2 fw-bold text-maroon mb-0"><i class="bi bi-broadcast text-danger me-2"></i> थेट आरती व्यवस्थापन (Live Stream Settings)</h1>
+            <a href="{{ url_for('public.live_aarti') }}" target="_blank" class="btn btn-outline-warning text-dark fw-bold">
+                <i class="bi bi-box-arrow-up-right me-1"></i> थेट दर्शन पृष्ठ उघडा
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- डावी बाजू: थेट सेटिंग्ज फॉर्म -->
+        <div class="col-lg-7">
+            <div class="temple-card p-4 p-md-5">
+                <h4 class="fw-bold text-maroon mb-3 border-bottom pb-2">प्रक्षेपण सेटिंग्ज अद्ययावत करा</h4>
+
+                <form method="POST" action="{{ url_for('admin.manage_stream') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                    <!-- थेट प्रक्षेपण स्थिती टॉगल -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="is_enabled" name="is_enabled" {% if settings.is_enabled %}checked{% endif %}>
+                            <label class="form-check-label fw-bold text-maroon" for="is_enabled">
+                                थेट आरती दर्शन सक्रिय ठेवा (Enable Live Stream)
+                            </label>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            हे बंद केल्यास भाविकांना थेट व्हिडिओ न दिसता खालील ऑफलाइन संदेश दिसेल.
+                        </small>
+                    </div>
+
+                    <!-- प्रदाता निवड (Provider) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">प्रक्षेपण प्रदाता (Streaming Provider)</label>
+                        <select class="form-select form-control-temple" name="provider" id="stream-provider">
+                            <option value="youtube" {% if settings.provider == 'youtube' %}selected{% endif %}>YouTube Live (सध्याचे डीफॉल्ट)</option>
+                            <option value="cloudflare" {% if settings.provider == 'cloudflare' %}selected{% endif %}>Cloudflare Stream (भविष्यातील अपग्रेड)</option>
+                            <option value="custom_hls" {% if settings.provider == 'custom_hls' %}selected{% endif %}>सानुकूल HLS / RTMP व्हिडिओ URL</option>
+                        </select>
+                        <small class="text-muted">आपण कोणत्याही वेळी प्रदाता बदलू शकता; वेबसाइट पुन्हा डिझाइन करण्याची गरज नाही.</small>
+                    </div>
+
+                    <!-- व्हिडिओ आयडी / YouTube Link -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">
+                            व्हिडिओ आयडी किंवा YouTube लिंक (Video ID / URL) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-danger"><i class="bi bi-youtube"></i></span>
+                            <input type="text" class="form-control form-control-temple" name="video_id" id="video-id-input" value="{{ settings.video_id or '' }}" placeholder="उदा. jfKfPfyJRdk किंवा संपूर्ण लिंक" required>
+                        </div>
+                        <small class="text-muted">
+                            YouTube Live व्हिडिओ आयडी (११ अक्षरी) किंवा लिंक येथे पेस्ट करा. सिस्टम आपोआप अचूक आयडी काढेल.
+                        </small>
+                    </div>
+
+                    <!-- ऑफलाइन असताना दिसणारा मराठी संदेश -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">प्रक्षेपण बंद असताना संदेश (Offline Message)</label>
+                        <textarea class="form-control form-control-temple" name="unavailable_message" rows="3" required>{{ settings.unavailable_message }}</textarea>
+                        <small class="text-muted">थेट आरती सुरू नसताना भाविकांना हा आदरयुक्त संदेश दिसेल.</small>
+                    </div>
+
+                    <!-- तात्पुरती सूचना -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">विशेष सूचना बॅनर (पर्यायी Notice)</label>
+                        <input type="text" class="form-control form-control-temple" name="notice" value="{{ settings.notice or '' }}" placeholder="उदा. महाशिवरात्रीनिमित्त अखंड २४ तास थेट दर्शन सुरू राहील.">
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-temple-primary py-2 px-4">
+                            <i class="bi bi-check-circle-fill me-1"></i> बदल जतन करा
+                        </button>
+                        <a href="{{ url_for('admin.aarti_schedule') }}" class="btn btn-outline-dark py-2 px-3">
+                            <i class="bi bi-clock-history me-1"></i> आरती वेळापत्रक व्यवस्थापन
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- उजवी बाजू: तात्काळ थेट प्रिव्ह्यू (Live Preview) -->
+        <div class="col-lg-5">
+            <div class="temple-card p-4">
+                <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+                    <i class="bi bi-eye-fill text-warning me-1"></i> थेट प्रिव्ह्यू (Live Preview)
+                </h5>
+
+                <div class="mb-2">
+                    <span class="text-muted small">सद्य स्थिती:</span>
+                    {% if settings.is_enabled and settings.video_id %}
+                    <span class="badge bg-success ms-2"><i class="bi bi-check-circle"></i> सक्रिय (LIVE)</span>
+                    {% else %}
+                    <span class="badge bg-secondary ms-2"><i class="bi bi-x-circle"></i> ऑफलाइन / बंद</span>
+                    {% endif %}
+                </div>
+
+                {% if settings.is_enabled and settings.video_id %}
+                <div class="ratio ratio-16x9 rounded-3 overflow-hidden border border-warning shadow-sm mt-3">
+                    <iframe 
+                        src="https://www.youtube.com/embed/{{ settings.video_id }}?rel=0&modestbranding=1" 
+                        title="थेट दर्शन प्रिव्ह्यू" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                {% else %}
+                <div class="p-4 bg-light rounded-3 text-center border mt-3">
+                    <i class="bi bi-camera-video-off text-muted fs-1 mb-2"></i>
+                    <p class="text-muted small mb-0">{{ settings.unavailable_message }}</p>
+                </div>
+                {% endif %}
+
+                <div class="mt-4 p-3 bg-warning-subtle rounded border border-warning">
+                    <h6 class="fw-bold text-maroon mb-1"><i class="bi bi-shield-check text-success me-1"></i> सुरक्षा आणि सर्व्हर भार:</h6>
+                    <small class="text-muted">
+                        व्हिडिओ थेट YouTube/Cloudflare CDN द्वारे स्ट्रीम केला जातो. आपल्या Flask सर्व्हरवर कोणताही बँडविड्थ किंवा CPU भार येत नाही.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

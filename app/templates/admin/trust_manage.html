@@ -1,0 +1,123 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}संस्थान माहिती व्यवस्थापन | Admin Trust Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-bank2 text-warning me-2"></i> मंदिर संस्थानाची माहिती व्यवस्थापन</h2>
+        <small class="text-muted">संस्थेचा इतिहास, नोंदणी तपशील, पत्ता आणि संपर्क माहिती अद्ययावत करा</small>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- डावी बाजू: मुख्य संस्थान माहिती फॉर्म -->
+    <div class="col-lg-8">
+        <div class="temple-card p-4 p-md-5">
+            <h4 class="fw-bold text-maroon mb-3 border-bottom pb-2">संस्थेचा मूळ परिचय</h4>
+
+            <form method="POST" action="{{ url_for('admin.manage_trust') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold text-dark">संस्थेचे पूर्ण नाव (Trust Name) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-temple" name="trust_name" value="{{ trust.trust_name if trust else '' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">स्थापना वर्ष</label>
+                        <input type="text" class="form-control form-control-temple" name="establishment_year" value="{{ trust.establishment_year if trust else '' }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">धर्मादाय नोंदणी क्रमांक (Registration Number) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control form-control-temple" name="registration_number" value="{{ trust.registration_number if trust else '' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">संस्थेचा संक्षिप्त परिचय (Introduction)</label>
+                    <textarea class="form-control form-control-temple" name="introduction" rows="3">{{ trust.introduction if trust else '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">मंदिराचा सविस्तर इतिहास (Temple History)</label>
+                    <textarea class="form-control form-control-temple" name="history" rows="5">{{ trust.history if trust else '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">संस्थेचा अधिकृत पत्ता (Address)</label>
+                    <textarea class="form-control form-control-temple" name="address" rows="2">{{ trust.address if trust else '' }}</textarea>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">हेल्पलाईन दूरध्वनी</label>
+                        <input type="text" class="form-control form-control-temple" name="helpline_phone" value="{{ trust.helpline_phone if trust else '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">ई-मेल संपर्क</label>
+                        <input type="email" class="form-control form-control-temple" name="contact_email" value="{{ trust.contact_email if trust else '' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">दर्शन वेळ</label>
+                        <input type="text" class="form-control form-control-temple" name="visiting_hours" value="{{ trust.visiting_hours if trust else '' }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-temple-primary py-2 px-4">
+                    <i class="bi bi-check-circle-fill me-1"></i> संस्थान माहिती जतन करा
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- उजवी बाजू: पारदर्शकता कागदपत्रे व्यवस्थापन (Public Documents) -->
+    <div class="col-lg-4">
+        <div class="temple-card p-4">
+            <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+                <i class="bi bi-file-earmark-check-fill text-warning me-1"></i> पारदर्शकता कागदपत्रे
+            </h5>
+
+            <form method="POST" action="{{ url_for('admin.add_document') }}" class="mb-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">दस्तऐवज शीर्षक</label>
+                    <input type="text" class="form-control form-control-sm" name="title" placeholder="उदा. वार्षिक लेखापरीक्षण अहवाल" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">प्रकार</label>
+                    <input type="text" class="form-control form-control-sm" name="document_type" placeholder="उदा. ऑडिट रिपोर्ट" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">वर्ष</label>
+                    <input type="text" class="form-control form-control-sm" name="published_year" placeholder="उदा. २०२५-२६">
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-warning text-dark fw-bold w-100">
+                    <i class="bi bi-plus-circle me-1"></i> दस्तऐवज जोडा
+                </button>
+            </form>
+
+            <h6 class="fw-bold text-dark border-top pt-3">उपलब्ध कागदपत्रे:</h6>
+            {% if documents %}
+                <ul class="list-group list-group-flush small">
+                    {% for doc in documents %}
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent">
+                        <div>
+                            <div class="fw-bold text-dark">{{ doc.title }}</div>
+                            <small class="text-muted">{{ doc.document_type }} ({{ doc.published_year }})</small>
+                        </div>
+                        <form method="POST" action="{{ url_for('admin.delete_document', doc_id=doc.id) }}" onsubmit="return confirm('हा दस्तऐवज काढायचा का?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                            <button type="submit" class="btn btn-sm text-danger p-0 border-0"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="small text-muted mb-0">कागदपत्रे जोडलेली नाहीत.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

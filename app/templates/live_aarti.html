@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}थेट आरती दर्शन | थेट प्रक्षेपण{% endblock %}
+
+{% block content %}
+<!-- अंतर्गत पानाचे हेडर -->
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">मुख्यपृष्ठ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">थेट आरती दर्शन</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <h1 class="h2 fw-bold text-maroon mb-0">थेट आरती दर्शन (Live Aarti Darshan)</h1>
+            {% if is_stream_active %}
+            <span class="live-badge fs-6 py-2 px-3">
+                <i class="bi bi-broadcast"></i> थेट प्रक्षेपण सुरू आहे
+            </span>
+            {% else %}
+            <span class="badge bg-secondary fs-6 py-2 px-3">
+                <i class="bi bi-clock-history"></i> थेट प्रक्षेपण ऑफलाइन
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    {% if notice %}
+    <div class="alert alert-warning border-warning border-2 shadow-sm d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-megaphone-fill fs-4 text-warning-emphasis me-3"></i>
+        <div>
+            <strong>विशेष सूचना:</strong> {{ notice }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-5">
+        <!-- डावी बाजू: थेट व्हिडिओ प्लेयर किंवा ऑफलाइन संदेश -->
+        <div class="col-lg-8">
+            <div class="temple-card p-3 p-md-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
+                    <div>
+                        <h4 class="fw-bold text-maroon mb-1">{{ trust.trust_name if trust else 'श्री देवस्थान' }} मुख्य गाभारा थेट दर्शन</h4>
+                        <small class="text-muted"><i class="bi bi-geo-alt-fill text-warning"></i> तीर्थक्षेत्र देवस्थान, महाराष्ट्र</small>
+                    </div>
+                    {% if is_stream_active %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 fw-bold">
+                        <span class="spinner-grow spinner-grow-sm me-1 text-danger"></span> थेट दर्शन सुरू
+                    </span>
+                    {% endif %}
+                </div>
+
+                {% if is_stream_active and embed_url %}
+                <!-- १. रिस्पॉन्सिव्ह व्हिडिओ प्लेयर (Embedded Live Video Player without External Redirect) -->
+                <div class="live-stream-box ratio ratio-16x9">
+                    <iframe 
+                        src="{{ embed_url }}" 
+                        title="श्री देवस्थान थेट आरती दर्शन" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                    <span class="text-muted small"><i class="bi bi-shield-check text-success"></i> अधिकृत सुरक्षित थेट प्रक्षेपण (Zero Server Proxy)</span>
+                    <button class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="window.location.reload();">
+                        <i class="bi bi-arrow-clockwise"></i> प्लेयर रीफ्रेश करा
+                    </button>
+                </div>
+                {% else %}
+                <!-- २. जेव्हा थेट प्रक्षेपण सुरू नसेल (Offline Notice Fallback) -->
+                <div class="offline-notice-box my-3">
+                    <div class="mb-3 text-warning">
+                        <i class="bi bi-camera-video-off" style="font-size: 3.5rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-maroon mb-2">
+                        {{ unavailable_message|default("सध्या थेट आरती सुरू नाही. कृपया पुढील आरतीच्या वेळी पुन्हा भेट द्या.") }}
+                    </h4>
+                    <p class="text-muted max-w-600 mx-auto mb-4">
+                        मंदिराचे थेट प्रक्षेपण केवळ दैनंदिन आरती आणि विशेष पूजा विधींच्या वेळी सक्रिय असते. पुढील नियोजित आरतीची वेळ खालीलप्रमाणे आहे.
+                    </p>
+                    {% if next_aarti %}
+                    <div class="d-inline-block p-3 bg-white border border-warning rounded-3 shadow-sm text-start">
+                        <div class="small text-muted">पुढील नियोजित आरती:</div>
+                        <div class="fw-bold text-maroon fs-5">{{ next_aarti.aarti_name }} - {{ next_aarti.marathi_time }}</div>
+                        <div class="small text-warning-emphasis mt-1">
+                            <i class="bi bi-hourglass-split"></i> अंदाजे वेळ शिल्लक: <span id="aarti-countdown" class="fw-bold">मोजणी सुरू आहे...</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- भाविकांसाठी सूचना -->
+            <div class="temple-card p-4">
+                <h5 class="fw-bold text-maroon mb-3"><i class="bi bi-info-circle-fill text-warning me-2"></i> ऑनलाइन दर्शन घेताना पाळावयाचे नियम</h5>
+                <ul class="list-unstyled mb-0 text-muted">
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i> थेट आरती सुरू असताना शांतचित्ताने हात जोडून ध्यानधारणा करावी.</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i> आरतीच्या वेळी घरात तुपाचा दिवा अथवा अगरबत्ती प्रज्वलित करून कुटुंबासह दर्शन घ्यावे.</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i> जर व्हिडिओ सुरू होत नसेल तर कृपया आपले इंटरनेट कनेक्शन तपासा आणि पृष्ठ पुन्हा रीफ्रेश करा.</li>
+                    <li><i class="bi bi-check2-circle text-success me-2"></i> थेट दर्शनादरम्यान आपण मंदिराच्या अन्नदान व सेवा कार्यात ऑनलाइन देणगी अर्पण करू शकता.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- उजवी बाजू: आरती वेळापत्रक आणि त्वरित देणगी -->
+        <div class="col-lg-4">
+            <!-- आरती वेळापत्रक टेबल -->
+            <div class="temple-card p-4 mb-4">
+                <div class="card-ornate-header mx-n4 mt-n4 mb-3">
+                    <h5 class="fw-bold text-maroon mb-0"><i class="bi bi-calendar-check text-warning me-2"></i> दैनिक आरती वेळापत्रक</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-maroon">आरती</th>
+                                <th class="text-maroon">वेळ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if aarti_list %}
+                                {% for item in aarti_list %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ item.aarti_name }}</div>
+                                        <small class="text-muted">{{ item.description or '' }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning-subtle text-dark border border-warning fw-bold">
+                                            {{ item.marathi_time }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="2" class="text-center text-muted">वेळापत्रक लवकरच उपलब्ध होईल.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- देणगी अर्पण बॉक्स -->
+            <div class="temple-card p-4 text-center bg-warning-subtle border-warning">
+                <h5 class="fw-bold text-maroon mb-2">आरतीसमयी देणगी अर्पण करा</h5>
+                <p class="small text-muted mb-3">थेट दर्शन घेताना मंदिर संवर्धन आणि अन्नदान निधीमध्ये आपले योगदान द्या.</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('public.donate') }}" class="btn btn-temple-primary py-2 fw-bold">
+                        <i class="bi bi-heart-fill me-1"></i> त्वरित देणगी द्या
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

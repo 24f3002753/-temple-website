@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}प्रशासक प्रवेश | Admin Login{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="temple-card p-4 p-md-5 shadow-lg border-2">
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="लोगो" style="height: 65px;" class="mb-2">
+                    <h3 class="fw-bold text-maroon">प्रशासक प्रवेश दालन</h3>
+                    <p class="small text-muted">श्री देवस्थान विश्वस्त व्यवस्था व्यवस्थापन प्रणाली</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('admin.login') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">वापरकर्ता नाव (Username)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-maroon"><i class="bi bi-person-fill"></i></span>
+                            <input type="text" class="form-control form-control-temple" name="username" placeholder="प्रशासक वापरकर्ता नाव" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark">गुप्तशब्द (Password)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-maroon"><i class="bi bi-lock-fill"></i></span>
+                            <input type="password" class="form-control form-control-temple" name="password" placeholder="गुप्तशब्द" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-temple-primary py-2 fs-6">
+                            सुरक्षित प्रवेश करा <i class="bi bi-box-arrow-in-right ms-1"></i>
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('public.index') }}" class="small text-muted text-decoration-none">
+                            <i class="bi bi-arrow-left me-1"></i> संकेतस्थळावर परत जा
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

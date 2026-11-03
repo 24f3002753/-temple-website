@@ -1,0 +1,170 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}विश्वस्त मंडळ व्यवस्थापन | Admin Trustees{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-people-fill text-warning me-2"></i> विश्वस्त मंडळ व्यवस्थापन (Trust Members)</h2>
+        <small class="text-muted">संस्थान विश्वस्तांची यादी, पदनामे, छायाचित्रे आणि क्रम व्यवस्थापन</small>
+    </div>
+    <button class="btn btn-temple-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+        <i class="bi bi-person-plus-fill me-1"></i> नवीन विश्वस्त जोडा
+    </button>
+</div>
+
+<div class="temple-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-maroon">क्रम</th>
+                    <th class="text-maroon">छायाचित्र</th>
+                    <th class="text-maroon">पूर्ण नाव</th>
+                    <th class="text-maroon">पदनाम</th>
+                    <th class="text-maroon">संक्षिप्त परिचय</th>
+                    <th class="text-maroon">स्थिती</th>
+                    <th class="text-maroon text-end">कृती</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if members %}
+                    {% for m in members %}
+                    <tr>
+                        <td class="fw-bold">{{ m.display_order }}</td>
+                        <td>
+                            <img src="{{ url_for('static', filename=m.photograph if m.photograph else 'images/default-trustee.svg') }}" alt="{{ m.full_name }}" style="width: 45px; height: 45px; object-fit: cover;" class="rounded-circle border">
+                        </td>
+                        <td><strong class="text-dark">{{ m.full_name }}</strong></td>
+                        <td><span class="badge bg-warning text-dark">{{ m.designation }}</span></td>
+                        <td><small class="text-muted">{{ m.description or '--' }}</small></td>
+                        <td>
+                            {% if m.is_active %}
+                            <span class="badge bg-success">सक्रिय</span>
+                            {% else %}
+                            <span class="badge bg-secondary">बंद</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning text-dark fw-bold me-1" data-bs-toggle="modal" data-bs-target="#editMemberModal{{ m.id }}">
+                                <i class="bi bi-pencil-square"></i> संपादन
+                            </button>
+                            <form method="POST" action="{{ url_for('admin.delete_member', member_id=m.id) }}" class="d-inline" onsubmit="return confirm('खात्री आहे का? हे विश्वस्त सदस्य काढले जातील.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- संपादन मॉडाल (Edit Member Modal) -->
+                    <div class="modal fade" id="editMemberModal{{ m.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fw-bold text-maroon">विश्वस्त संपादन: {{ m.full_name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+                                </div>
+                                <form method="POST" action="{{ url_for('admin.edit_member', member_id=m.id) }}">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">पूर्ण नाव <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="full_name" value="{{ m.full_name }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">पदनाम (Designation) <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="designation">
+                                                <option value="अध्यक्ष" {% if m.designation == 'अध्यक्ष' %}selected{% endif %}>अध्यक्ष</option>
+                                                <option value="उपाध्यक्ष" {% if m.designation == 'उपाध्यक्ष' %}selected{% endif %}>उपाध्यक्ष</option>
+                                                <option value="सचिव" {% if m.designation == 'सचिव' %}selected{% endif %}>सचिव</option>
+                                                <option value="सहसचिव" {% if m.designation == 'सहसचिव' %}selected{% endif %}>सहसचिव</option>
+                                                <option value="खजिनदार" {% if m.designation == 'खजिनदार' %}selected{% endif %}>खजिनदार</option>
+                                                <option value="विश्वस्त" {% if m.designation == 'विश्वस्त' %}selected{% endif %}>विश्वस्त</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">छायाचित्र पथ</label>
+                                            <input type="text" class="form-control" name="photograph" value="{{ m.photograph or 'images/default-trustee.svg' }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">संक्षिप्त माहिती / जबाबदारी</label>
+                                            <textarea class="form-control" name="description" rows="2">{{ m.description or '' }}</textarea>
+                                        </div>
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label fw-bold">प्रदर्शन क्रम</label>
+                                                <input type="number" class="form-control" name="display_order" value="{{ m.display_order }}" min="1">
+                                            </div>
+                                            <div class="col-6 d-flex align-items-end">
+                                                <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="active{{ m.id }}" name="is_active" {% if m.is_active %}checked{% endif %}>
+                                                    <label class="form-check-label fw-bold" for="active{{ m.id }}">सक्रिय ठेवा</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                                        <button type="submit" class="btn btn-temple-primary">बदल जतन करा</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">विश्वस्त सदस्य आढळले नाहीत.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- नवीन विश्वस्त जोडण्यासाठी मॉडाल (Add Member Modal) -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold text-maroon"><i class="bi bi-person-plus text-warning me-1"></i> नवीन विश्वस्त जोडा</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_member') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">पूर्ण नाव <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="full_name" placeholder="उदा. श्री. विठ्ठलराव जाधव" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">पदनाम <span class="text-danger">*</span></label>
+                        <select class="form-select" name="designation">
+                            <option value="विश्वस्त" selected>विश्वस्त</option>
+                            <option value="अध्यक्ष">अध्यक्ष</option>
+                            <option value="उपाध्यक्ष">उपाध्यक्ष</option>
+                            <option value="सचिव">सचिव</option>
+                            <option value="सहसचिव">सहसचिव</option>
+                            <option value="खजिनदार">खजिनदार</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">छायाचित्र पथ</label>
+                        <input type="text" class="form-control" name="photograph" value="images/default-trustee.svg">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">संक्षिप्त माहिती / जबाबदारी</label>
+                        <textarea class="form-control" name="description" rows="2" placeholder="उदा. मंदिर अन्नदान व स्वच्छता समिती"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">प्रदर्शन क्रम</label>
+                        <input type="number" class="form-control" name="display_order" value="9" min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                    <button type="submit" class="btn btn-temple-primary">विश्वस्त जतन करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

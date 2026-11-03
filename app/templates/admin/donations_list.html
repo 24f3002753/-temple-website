@@ -1,0 +1,126 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}देणगी व्यवस्थापन | Admin Donations{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-currency-rupee text-warning me-2"></i> देणगी व्यवस्थापन (Donation Records)</h2>
+        <small class="text-muted">संस्थेस प्राप्त झालेल्या सर्व देणग्यांची अधिकृत व सुरक्षित नोंदवही</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.export_donations_csv', status=current_status, search=current_search) }}" class="btn btn-outline-success fw-bold">
+            <i class="bi bi-file-earmark-excel-fill me-1"></i> CSV / Excel मध्ये एक्सपोर्ट करा
+        </a>
+    </div>
+</div>
+
+<!-- शोध व फिल्टर पट्टी (Search & Filter Bar) -->
+<div class="temple-card p-3 mb-4 bg-white">
+    <form method="GET" action="{{ url_for('admin.donations_list') }}" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" name="search" value="{{ current_search or '' }}" placeholder="देणगीदाराचे नाव, पावती क्र., किंवा पेमेंट आयडी...">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="status">
+                <option value="">सर्व स्थिती (All Status)</option>
+                <option value="PAID" {% if current_status == 'PAID' %}selected{% endif %}>यशस्वी (PAID)</option>
+                <option value="PENDING" {% if current_status == 'PENDING' %}selected{% endif %}>प्रलंबित (PENDING)</option>
+                <option value="FAILED" {% if current_status == 'FAILED' %}selected{% endif %}>अयशस्वी (FAILED)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-temple-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> शोधा
+            </button>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ url_for('admin.donations_list') }}" class="btn btn-outline-secondary w-100">
+                रीसेट करा
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- देणग्यांची मुख्य टेबल -->
+<div class="temple-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="fw-bold text-maroon">एकूण नोंदी: {{ donations|length }}</span>
+        <span class="small text-muted"><i class="bi bi-shield-lock-fill text-success"></i> सुरक्षित आणि अपरिवर्तनीय आर्थिक नोंदी (Immutable Audit Records)</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-maroon">पावती क्र.</th>
+                    <th class="text-maroon">देणगीदार</th>
+                    <th class="text-maroon">संपर्क (Email / Phone)</th>
+                    <th class="text-maroon">रक्कम</th>
+                    <th class="text-maroon">स्थिती</th>
+                    <th class="text-maroon">दिनांक व वेळ</th>
+                    <th class="text-maroon text-end">कृती</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if donations %}
+                    {% for d in donations %}
+                    <tr>
+                        <td>
+                            <strong class="text-maroon fs-6">{{ d.receipt_number or 'प्रलंबित' }}</strong>
+                            {% if d.payment and d.payment.razorpay_payment_id %}
+                            <small class="d-block text-muted" style="font-size: 0.75rem;">Ref: {{ d.payment.razorpay_payment_id }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong class="text-dark">{{ d.donor.full_name }}</strong>
+                        </td>
+                        <td>
+                            <div class="small">{{ d.donor.email }}</div>
+                            <small class="text-muted">{{ d.donor.phone }}</small>
+                        </td>
+                        <td>
+                            <strong class="text-success fs-5">₹ {{ "{:,.2f}".format(d.amount) }}</strong>
+                        </td>
+                        <td>
+                            {% if d.status == 'PAID' %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i> PAID</span>
+                            {% elif d.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark"><i class="bi bi-clock-fill me-1"></i> PENDING</span>
+                            {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i> {{ d.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ d.created_at.strftime('%d-%m-%Y %H:%M') if d.created_at else '--' }}</small>
+                        </td>
+                        <td class="text-end">
+                            {% if d.status == 'PAID' and d.receipt_number %}
+                            <!-- पावती डाऊनलोड -->
+                            <a href="{{ url_for('donations.download_receipt', receipt_number=d.receipt_number) }}" class="btn btn-sm btn-outline-danger me-1" target="_blank" title="पावती PDF डाऊनलोड">
+                                <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                            </a>
+                            <!-- ईमेल पुन्हा पाठवणे -->
+                            <form method="POST" action="{{ url_for('admin.resend_receipt_email', donation_id=d.id) }}" class="d-inline" onsubmit="return confirm('देणगीदारास ईमेलवर पुन्हा पावती पाठवायची का?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary" title="ईमेलवर पुन्हा पावती पाठवा">
+                                    <i class="bi bi-envelope-arrow-up-fill"></i> ईमेल
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted small">--</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="7" class="text-center text-muted py-5">कोणतीही देणगी नोंद आढळली नाही.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

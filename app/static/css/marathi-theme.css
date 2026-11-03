@@ -1,0 +1,599 @@
+/* ==========================================================================
+   श्री देवस्थान विश्वस्त व्यवस्था (Temple Trust) - मुख्य मराठी थीम CSS
+   पारंपारिक रंगसंगती: भगवा, सोनेरी, क्रीम, मरून आणि गडद तपकिरी
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+
+:root {
+    --color-saffron-primary: #E65100;
+    --color-saffron-light: #FF8F00;
+    --color-saffron-dark: #BF360C;
+    --color-gold-primary: #D4AF37;
+    --color-gold-dark: #9A7B1C;
+    --color-gold-light: #F7E7A9;
+    --color-maroon: #7A0000;
+    --color-maroon-dark: #4D0000;
+    --color-cream-bg: #FDFBF7;
+    --color-cream-card: #FFFFFF;
+    --color-cream-accent: #FFF8E7;
+    --color-dark-brown: #2D1E18;
+    --color-text-main: #261C14;
+    --color-text-muted: #6B5B52;
+    --border-gold: 1px solid rgba(212, 175, 55, 0.4);
+    --border-ornate: 2px solid #D4AF37;
+    --shadow-temple: 0 8px 24px rgba(122, 0, 0, 0.08);
+    --shadow-card: 0 4px 15px rgba(45, 30, 24, 0.06);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+}
+
+/* जागतिक मांडणी (Global Resets & Typography) */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Mukta', 'Noto Sans Devanagari', -apple-system, sans-serif;
+    background-color: var(--color-cream-bg);
+    color: var(--color-text-main);
+    line-height: 1.65;
+    font-size: 1.05rem;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Mukta', 'Noto Sans Devanagari', sans-serif;
+    color: var(--color-maroon);
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+a {
+    color: var(--color-saffron-dark);
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+a:hover {
+    color: var(--color-maroon);
+}
+
+/* शीर्षपट्टी (Top Header Bar) */
+.temple-top-bar {
+    background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-maroon-dark) 100%);
+    color: #FFF;
+    font-size: 0.95rem;
+    padding: 8px 0;
+    border-bottom: 2px solid var(--color-gold-primary);
+}
+
+.temple-top-bar a {
+    color: var(--color-gold-light);
+}
+
+.temple-top-bar a:hover {
+    color: #FFFFFF;
+}
+
+/* मुख्य हेडर व ब्रँडिंग (Header Brand Section) */
+.temple-header {
+    background-color: #FFFFFF;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.temple-logo-img {
+    height: 75px;
+    width: auto;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.temple-title {
+    font-size: 1.85rem;
+    color: var(--color-maroon);
+    font-weight: 800;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+}
+
+.temple-subtitle {
+    font-size: 0.98rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* मुख्य मराठी नेव्हिगेशन मेनू (Main Navigation Bar) */
+.temple-navbar {
+    background: linear-gradient(135deg, var(--color-saffron-primary) 0%, var(--color-saffron-dark) 100%);
+    box-shadow: 0 4px 12px rgba(191, 54, 12, 0.25);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    border-bottom: 3px solid var(--color-gold-primary);
+}
+
+.temple-navbar .nav-link {
+    color: #FFFFFF !important;
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 14px 16px !important;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.temple-navbar .nav-link:hover,
+.temple-navbar .nav-link.active {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: var(--color-gold-light) !important;
+    border-bottom-color: var(--color-gold-primary);
+}
+
+.nav-cta-btn {
+    border-radius: 30px;
+    padding: 8px 18px !important;
+    margin: 8px 6px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.btn-aarti-nav {
+    background: #FFF;
+    color: var(--color-maroon) !important;
+    border: 1px solid var(--color-gold-primary);
+}
+
+.btn-aarti-nav:hover {
+    background: var(--color-gold-light);
+    color: var(--color-maroon-dark) !important;
+}
+
+.btn-donate-nav {
+    background: linear-gradient(135deg, var(--color-gold-primary) 0%, var(--color-gold-dark) 100%);
+    color: #FFF !important;
+    border: 1px solid #FFF;
+}
+
+.btn-donate-nav:hover {
+    background: linear-gradient(135deg, #e6c555 0%, var(--color-gold-primary) 100%);
+    color: #111 !important;
+}
+
+/* हिरो सेक्शन (Hero Section) */
+.hero-section {
+    position: relative;
+    background: linear-gradient(rgba(45, 30, 24, 0.75), rgba(77, 0, 0, 0.82)), 
+                url('../images/hero-temple.svg') center/cover no-repeat;
+    color: #FFFFFF;
+    padding: 90px 0 80px;
+    text-align: center;
+    border-bottom: 4px solid var(--color-gold-primary);
+}
+
+.hero-shloka {
+    font-size: 1.35rem;
+    color: var(--color-gold-light);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.hero-heading {
+    font-size: 2.85rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    margin-bottom: 18px;
+}
+
+.hero-desc {
+    font-size: 1.2rem;
+    max-width: 780px;
+    margin: 0 auto 30px;
+    color: #F8EFE6;
+}
+
+.hero-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* बटणे (Traditional Buttons) */
+.btn-temple-primary {
+    background: linear-gradient(135deg, var(--color-saffron-primary) 0%, var(--color-saffron-dark) 100%);
+    color: #FFF;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: 2px solid var(--color-gold-primary);
+    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-temple-primary:hover {
+    color: #FFF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(230, 81, 0, 0.45);
+}
+
+.btn-temple-gold {
+    background: linear-gradient(135deg, var(--color-gold-primary) 0%, var(--color-gold-dark) 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-temple-gold:hover {
+    color: #271815;
+    background: #FFF;
+    transform: translateY(-2px);
+}
+
+/* विभाग शीर्षके व सुशोभन (Section Headings) */
+.section-title-wrap {
+    text-align: center;
+    margin-bottom: 45px;
+    position: relative;
+}
+
+.section-badge {
+    display: inline-block;
+    background-color: var(--color-cream-accent);
+    color: var(--color-saffron-dark);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: 1px solid var(--color-gold-primary);
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    color: var(--color-maroon);
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.section-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 8px auto 0;
+}
+
+.section-divider-line {
+    height: 2px;
+    width: 60px;
+    background: linear-gradient(90deg, transparent, var(--color-gold-primary));
+}
+
+.section-divider-line.right {
+    background: linear-gradient(90deg, var(--color-gold-primary), transparent);
+}
+
+.section-divider-icon {
+    color: var(--color-saffron-primary);
+    font-size: 1.1rem;
+}
+
+/* कार्डे आणि कंटेनर्स (Cards & Boxes) */
+.temple-card {
+    background-color: var(--color-cream-card);
+    border-radius: var(--radius-md);
+    border: var(--border-gold);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.25s, box-shadow 0.25s;
+    overflow: hidden;
+    height: 100%;
+}
+
+.temple-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(45, 30, 24, 0.12);
+    border-color: var(--color-gold-primary);
+}
+
+.card-ornate-header {
+    background: linear-gradient(135deg, var(--color-cream-accent) 0%, #FFFFFF 100%);
+    border-bottom: 2px solid var(--color-gold-light);
+    padding: 16px 20px;
+}
+
+/* थेट आरती विभाग (Live Aarti Component) */
+.live-stream-box {
+    background-color: #000;
+    border-radius: var(--radius-lg);
+    border: 3px solid var(--color-gold-primary);
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.live-badge {
+    background: #E50914;
+    color: #FFF;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.offline-notice-box {
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFF3D6 100%);
+    border: 2px dashed var(--color-gold-dark);
+    border-radius: var(--radius-md);
+    padding: 30px;
+    text-align: center;
+    color: var(--color-text-main);
+}
+
+.aarti-table {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.aarti-table thead {
+    background: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-maroon-dark) 100%);
+    color: #FFFFFF;
+}
+
+.aarti-table thead th {
+    font-weight: 700;
+    border: none;
+    padding: 14px 16px;
+}
+
+.aarti-table tbody tr {
+    background-color: #FFF;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    transition: background 0.2s;
+}
+
+.aarti-table tbody tr:hover {
+    background-color: var(--color-cream-accent);
+}
+
+/* ऑनलाइन देणगी फॉर्म (Donation Form Styling) */
+.donation-box {
+    background-color: #FFFFFF;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-gold-primary);
+    box-shadow: var(--shadow-temple);
+    padding: 35px;
+}
+
+.amount-btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.amount-btn {
+    flex: 1 1 calc(25% - 12px);
+    min-width: 90px;
+    padding: 12px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-gold-primary);
+    background-color: var(--color-cream-accent);
+    color: var(--color-maroon);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.amount-btn:hover,
+.amount-btn.active {
+    background: linear-gradient(135deg, var(--color-saffron-primary) 0%, var(--color-saffron-dark) 100%);
+    color: #FFFFFF;
+    border-color: var(--color-saffron-dark);
+    transform: scale(1.03);
+}
+
+.form-control-temple {
+    border: 2px solid #E0D3C1;
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-size: 1.05rem;
+    transition: border-color 0.2s;
+}
+
+.form-control-temple:focus {
+    border-color: var(--color-saffron-primary);
+    box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.15);
+    outline: none;
+}
+
+/* विश्वस्त मंडळ कार्डे (Trust Member Profile Cards) */
+.trustee-card {
+    text-align: center;
+    padding: 24px 16px;
+    background: #FFFFFF;
+    border: var(--border-gold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s;
+    height: 100%;
+}
+
+.trustee-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-saffron-primary);
+}
+
+.trustee-photo {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    border: 4px solid var(--color-gold-light);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.trustee-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-maroon);
+    margin-bottom: 4px;
+}
+
+.trustee-role {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--color-saffron-dark);
+    background: var(--color-cream-accent);
+    display: inline-block;
+    padding: 2px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    margin-bottom: 10px;
+}
+
+/* छायाचित्र संग्रह गॅलरी (Gallery Grid & Lightbox) */
+.gallery-card {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: var(--border-gold);
+    box-shadow: var(--shadow-card);
+    aspect-ratio: 4 / 3;
+    cursor: pointer;
+}
+
+.gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.gallery-card:hover img {
+    transform: scale(1.08);
+}
+
+.gallery-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(38, 28, 20, 0.92) 0%, transparent 100%);
+    color: #FFFFFF;
+    padding: 24px 16px 12px;
+}
+
+/* पादटीप (Footer Section) */
+.temple-footer {
+    background: linear-gradient(180deg, var(--color-dark-brown) 0%, #1A0E0A 100%);
+    color: #E6D8CC;
+    border-top: 4px solid var(--color-gold-primary);
+    padding: 60px 0 20px;
+    margin-top: 70px;
+}
+
+.temple-footer h5 {
+    color: var(--color-gold-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.temple-footer h5::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--color-saffron-light);
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #C7B5A7;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: var(--color-gold-light);
+    transform: translateX(4px);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    margin-top: 40px;
+    font-size: 0.95rem;
+    color: #9C8B7F;
+}
+
+/* प्रतिसादात्मक नियम (Responsive Adjustments) */
+@media (max-width: 991.98px) {
+    .hero-heading {
+        font-size: 2.2rem;
+    }
+    .temple-title {
+        font-size: 1.5rem;
+    }
+    .temple-navbar .nav-link {
+        padding: 10px 14px !important;
+    }
+    .amount-btn {
+        flex: 1 1 calc(50% - 12px);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-heading {
+        font-size: 1.8rem;
+    }
+    .hero-section {
+        padding: 50px 0 45px;
+    }
+    .btn-temple-primary, .btn-temple-gold {
+        width: 100%;
+        text-align: center;
+    }
+    .amount-btn {
+        flex: 1 1 100%;
+    }
+}

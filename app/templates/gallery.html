@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+
+{% block title %}छायाचित्र संग्रह | दर्शन व उत्सव{% endblock %}
+
+{% block content %}
+<!-- अंतर्गत पानाचे हेडर -->
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">मुख्यपृष्ठ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">छायाचित्र संग्रह</li>
+            </ol>
+        </nav>
+        <h1 class="h2 fw-bold text-maroon mb-0">छायाचित्र संग्रह (Photo Gallery)</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="section-title-wrap mb-4">
+        <span class="section-badge">मंगलमय क्षणचित्रे</span>
+        <h2 class="section-title">दैनिक आरती, उत्सव व मंदिर दर्शन</h2>
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <i class="bi bi-camera-reels-fill section-divider-icon"></i>
+            <div class="section-divider-line right"></div>
+        </div>
+        <p class="text-muted mt-2">मंदिरातील नित्य विधी, सण-उत्सव आणि ऐतिहासिक परिसराची छायाचित्रे (मोठे छायाचित्र पाहण्यासाठी प्रतिमेवर क्लिक करा)</p>
+    </div>
+
+    <!-- कॅटेगरी फिल्टर (Filter Tabs) -->
+    <ul class="nav nav-pills justify-content-center mb-5 gap-2" id="galleryFilterTab" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active px-4 py-2 fw-semibold rounded-pill" id="all-tab" data-bs-toggle="pill" data-bs-target="#all-photos" type="button">सर्व छायाचित्रे</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link px-4 py-2 fw-semibold rounded-pill" id="aarti-tab" data-bs-toggle="pill" data-bs-target="#aarti-photos" type="button">दैनिक आरती</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link px-4 py-2 fw-semibold rounded-pill" id="festival-tab" data-bs-toggle="pill" data-bs-target="#festival-photos" type="button">सण व उत्सव</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link px-4 py-2 fw-semibold rounded-pill" id="temple-tab" data-bs-toggle="pill" data-bs-target="#temple-photos" type="button">मंदिर परिसर</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link px-4 py-2 fw-semibold rounded-pill" id="social-tab" data-bs-toggle="pill" data-bs-target="#social-photos" type="button">सामाजिक सेवा व अन्नछत्र</button>
+        </li>
+    </ul>
+
+    <!-- छायाचित्रांची ग्रिड (Gallery Grid) -->
+    <div class="tab-content" id="galleryTabContent">
+        <!-- सर्व छायाचित्रे -->
+        <div class="tab-pane fade show active" id="all-photos" role="tabpanel">
+            <div class="row g-4">
+                {% if all_images %}
+                    {% for img in all_images %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=img.image_path) }}" data-title="{{ img.title }}">
+                            <img src="{{ url_for('static', filename=img.image_path) }}" alt="{{ img.title }}">
+                            <div class="gallery-caption">
+                                <span class="badge bg-warning text-dark mb-1">{{ img.category|upper }}</span>
+                                <div class="fw-bold fs-5">{{ img.title }}</div>
+                                <small class="text-white-50">{{ img.description or 'श्री देवस्थान दर्शन' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center text-muted">छायाचित्रे उपलब्ध होत आहेत...</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- दैनिक आरती -->
+        <div class="tab-pane fade" id="aarti-photos" role="tabpanel">
+            <div class="row g-4">
+                {% for img in aarti_images|default([]) %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=img.image_path) }}" data-title="{{ img.title }}">
+                        <img src="{{ url_for('static', filename=img.image_path) }}" alt="{{ img.title }}">
+                        <div class="gallery-caption">
+                            <span class="badge bg-warning text-dark mb-1">दैनिक आरती</span>
+                            <div class="fw-bold fs-5">{{ img.title }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- उत्सव -->
+        <div class="tab-pane fade" id="festival-photos" role="tabpanel">
+            <div class="row g-4">
+                {% for img in festival_images|default([]) %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=img.image_path) }}" data-title="{{ img.title }}">
+                        <img src="{{ url_for('static', filename=img.image_path) }}" alt="{{ img.title }}">
+                        <div class="gallery-caption">
+                            <span class="badge bg-danger mb-1">सण व उत्सव</span>
+                            <div class="fw-bold fs-5">{{ img.title }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- मंदिर परिसर -->
+        <div class="tab-pane fade" id="temple-photos" role="tabpanel">
+            <div class="row g-4">
+                {% for img in campus_images|default([]) %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=img.image_path) }}" data-title="{{ img.title }}">
+                        <img src="{{ url_for('static', filename=img.image_path) }}" alt="{{ img.title }}">
+                        <div class="gallery-caption">
+                            <span class="badge bg-primary mb-1">मंदिर परिसर</span>
+                            <div class="fw-bold fs-5">{{ img.title }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- सामाजिक सेवा -->
+        <div class="tab-pane fade" id="social-photos" role="tabpanel">
+            <div class="row g-4">
+                {% for img in social_images|default([]) %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=img.image_path) }}" data-title="{{ img.title }}">
+                        <img src="{{ url_for('static', filename=img.image_path) }}" alt="{{ img.title }}">
+                        <div class="gallery-caption">
+                            <span class="badge bg-success mb-1">सामाजिक सेवा</span>
+                            <div class="fw-bold fs-5">{{ img.title }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

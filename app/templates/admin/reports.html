@@ -1,0 +1,82 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}आर्थिक अहवाल | Admin Reports{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-bar-chart-line-fill text-warning me-2"></i> आर्थिक अहवाल व देणगी ताळेबंद (Donation Reports)</h2>
+        <small class="text-muted">संस्थेच्या देणग्यांचे दैनिक, मासिक व वार्षिक पारदर्शक विश्लेषण</small>
+    </div>
+    <a href="{{ url_for('admin.export_donations_csv') }}" class="btn btn-outline-success fw-bold">
+        <i class="bi bi-file-earmark-excel-fill me-1"></i> संपूर्ण ऑडिट डेटा CSV एक्सपोर्ट
+    </a>
+</div>
+
+<!-- अहवाल सारांश कार्डे -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="temple-card p-4 bg-white border-start border-4 border-success">
+            <span class="text-muted small fw-bold">यशस्वी देणग्यांची एकूण रक्कम</span>
+            <h3 class="fw-bold text-success mb-1">₹ {{ "{:,.2f}".format(total_paid_amount|default(0)) }}</h3>
+            <small class="text-muted">एकूण यशस्वी पावत्या: <strong>{{ total_paid_count|default(0) }}</strong></small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="temple-card p-4 bg-white border-start border-4 border-primary">
+            <span class="text-muted small fw-bold">चालू महिना जमा</span>
+            <h3 class="fw-bold text-primary mb-1">₹ {{ "{:,.2f}".format(month_amount|default(0)) }}</h3>
+            <small class="text-muted">या महिन्यातील भाविक देणग्या</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="temple-card p-4 bg-white border-start border-4 border-warning">
+            <span class="text-muted small fw-bold">सरासरी देणगी रक्कम (Average Donation)</span>
+            <h3 class="fw-bold text-maroon mb-1">₹ {{ "{:,.2f}".format(avg_amount|default(0)) }}</h3>
+            <small class="text-muted">प्रति भाविक सरासरी योगदान</small>
+        </div>
+    </div>
+</div>
+
+<!-- मासिक ब्रेकडाउन टेबल -->
+<div class="temple-card p-4">
+    <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+        <i class="bi bi-calendar3 text-warning me-2"></i> मासिक देणगी संकलन आढावा
+    </h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-maroon">महिना व वर्ष</th>
+                    <th class="text-maroon">एकूण व्यवहार</th>
+                    <th class="text-maroon">यशस्वी देणग्या</th>
+                    <th class="text-maroon">एकूण जमा रक्कम (₹)</th>
+                    <th class="text-maroon text-end">ऑडिट स्थिती</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if monthly_stats %}
+                    {% for stat in monthly_stats %}
+                    <tr>
+                        <td><strong class="text-dark">{{ stat.month_str }}</strong></td>
+                        <td>{{ stat.total_trans }}</td>
+                        <td><span class="badge bg-success">{{ stat.paid_trans }}</span></td>
+                        <td><strong class="text-success fs-6">₹ {{ "{:,.2f}".format(stat.total_sum) }}</strong></td>
+                        <td class="text-end"><span class="badge bg-primary-subtle text-primary border border-primary">प्रमाणित</span></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td><strong>चालू महिना</strong></td>
+                        <td>{{ total_paid_count }}</td>
+                        <td><span class="badge bg-success">{{ total_paid_count }}</span></td>
+                        <td><strong class="text-success fs-6">₹ {{ "{:,.2f}".format(total_paid_amount) }}</strong></td>
+                        <td class="text-end"><span class="badge bg-primary-subtle text-primary border border-primary">चालू</span></td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

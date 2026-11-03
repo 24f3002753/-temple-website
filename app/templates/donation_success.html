@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}देणगी यशस्वी | पावती डाऊनलोड{% endblock %}
+
+{% block content %}
+<div class="container py-5 my-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="temple-card p-4 p-md-5 text-center shadow-lg border-success">
+                <!-- यश चिन्ह -->
+                <div class="mb-4">
+                    <div class="rounded-circle bg-success-subtle text-success d-inline-flex p-3 border border-success border-3">
+                        <i class="bi bi-check-circle-fill" style="font-size: 3.5rem;"></i>
+                    </div>
+                </div>
+
+                <div class="badge bg-success px-3 py-2 fs-6 mb-3">पेमेंट यशस्वीरित्या संपन्न</div>
+
+                <h2 class="fw-bold text-maroon mb-3">
+                    आपली देणगी यशस्वीरित्या प्राप्त झाली आहे.<br>मंदिर संस्थानाच्या वतीने आपले मनःपूर्वक आभार!
+                </h2>
+
+                <p class="text-muted max-w-600 mx-auto mb-4">
+                    आपल्या दातृत्वाबद्दल मंदिर विश्वस्त मंडळ आपले अत्यंत ऋणी आहे. आपल्या योगदानातून मंदिर सेवा, अन्नछत्र व सामाजिक विकास कार्यास मोठे बळ लाभेल.
+                </p>
+
+                <!-- पावती व व्यवहार तपशील कार्ड -->
+                <div class="p-4 bg-light rounded-4 border text-start mb-4">
+                    <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+                        <i class="bi bi-receipt-cutoff text-warning me-2"></i> देणगी पावती तपशील
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted small d-block">देणगीदार भाविकाचे नाव:</span>
+                            <strong class="text-dark fs-6">{{ donor_name|default('श्री. भाविक') }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small d-block">देणगी रक्कम:</span>
+                            <strong class="text-success fs-5">₹ {{ amount|default('५०१') }} /-</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small d-block">अधिकृत पावती क्रमांक:</span>
+                            <strong class="text-maroon fs-6">{{ receipt_number|default('STT-2026-0001') }}</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small d-block">व्यवहार संदर्भ (Transaction Ref):</span>
+                            <span class="badge bg-secondary-subtle text-dark border">{{ payment_id|default('pay_dev_sample') }}</span>
+                        </div>
+                        <div class="col-12 mt-3 pt-2 border-top">
+                            <span class="text-muted small d-block">ईमेल स्थिती:</span>
+                            <small class="text-success"><i class="bi bi-envelope-check-fill me-1"></i> पावतीची डिजिटल प्रत आपल्या नोंदणीकृत ईमेलवर पाठवली आहे.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- तात्काळ पावती डाऊनलोड बटण -->
+                <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+                    <a href="{{ url_for('donations.download_receipt', receipt_number=receipt_number|default('STT-2026-0001')) }}" class="btn btn-temple-primary px-4 py-2 fs-5" target="_blank">
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i> अधिकृत पावती डाऊनलोड करा (PDF)
+                    </a>
+                    <button class="btn btn-outline-dark px-4 py-2" onclick="window.print();">
+                        <i class="bi bi-printer-fill me-1"></i> प्रिंट करा
+                    </button>
+                </div>
+
+                <div class="text-muted small">
+                    <a href="{{ url_for('public.index') }}" class="text-decoration-underline text-maroon fw-semibold">
+                        <i class="bi bi-house-door-fill me-1"></i> मुख्यपृष्ठावर परत जा
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

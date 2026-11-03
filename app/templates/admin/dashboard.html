@@ -1,0 +1,186 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}नियंत्रण फलक (Dashboard){% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+    <!-- १. एकूण देणगी निधी -->
+    <div class="col-xl-3 col-md-6">
+        <div class="admin-stat-card bg-white p-3 border-start border-4 border-warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-bold d-block">एकूण प्राप्त देणगी निधी</span>
+                    <h3 class="fw-bold text-maroon mb-0">₹ {{ "{:,.2f}".format(total_amount|default(0)) }}</h3>
+                </div>
+                <div class="rounded-circle bg-warning-subtle text-warning-emphasis p-3">
+                    <i class="bi bi-wallet2 fs-3"></i>
+                </div>
+            </div>
+            <small class="text-success mt-2 d-block"><i class="bi bi-check-circle-fill"></i> एकूण सर्व देणग्यांची गोळाबेरीज</small>
+        </div>
+    </div>
+
+    <!-- २. आजची देणगी -->
+    <div class="col-xl-3 col-md-6">
+        <div class="admin-stat-card bg-white p-3 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-bold d-block">आजची देणगी (Today's)</span>
+                    <h3 class="fw-bold text-success mb-0">₹ {{ "{:,.2f}".format(today_amount|default(0)) }}</h3>
+                </div>
+                <div class="rounded-circle bg-success-subtle text-success p-3">
+                    <i class="bi bi-calendar-check fs-3"></i>
+                </div>
+            </div>
+            <small class="text-muted mt-2 d-block">आजचे व्यवहार: <strong>{{ today_count|default(0) }}</strong></small>
+        </div>
+    </div>
+
+    <!-- ३. चालू महिन्याची देणगी -->
+    <div class="col-xl-3 col-md-6">
+        <div class="admin-stat-card bg-white p-3 border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-bold d-block">या महिन्यातील देणगी</span>
+                    <h3 class="fw-bold text-primary mb-0">₹ {{ "{:,.2f}".format(month_amount|default(0)) }}</h3>
+                </div>
+                <div class="rounded-circle bg-primary-subtle text-primary p-3">
+                    <i class="bi bi-graph-up-arrow fs-3"></i>
+                </div>
+            </div>
+            <small class="text-muted mt-2 d-block">यशस्वी व्यवहार: <strong>{{ paid_count|default(0) }}</strong></small>
+        </div>
+    </div>
+
+    <!-- ४. प्रलंबित व्यवहार -->
+    <div class="col-xl-3 col-md-6">
+        <div class="admin-stat-card bg-white p-3 border-start border-4 border-danger">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-bold d-block">प्रलंबित व्यवहार (Pending)</span>
+                    <h3 class="fw-bold text-danger mb-0">{{ pending_count|default(0) }}</h3>
+                </div>
+                <div class="rounded-circle bg-danger-subtle text-danger p-3">
+                    <i class="bi bi-hourglass-split fs-3"></i>
+                </div>
+            </div>
+            <small class="text-muted mt-2 d-block"><a href="{{ url_for('admin.donations_list') }}?status=PENDING" class="text-danger fw-bold">पडताळणी करा &raquo;</a></small>
+        </div>
+    </div>
+</div>
+
+<!-- ताजे देणगी व्यवहार आणि जलद कृती -->
+<div class="row g-4">
+    <!-- डावी बाजू: ताजी देणगी व्यवहार यादी -->
+    <div class="col-lg-8">
+        <div class="temple-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-maroon mb-0">
+                    <i class="bi bi-clock-history text-warning me-2"></i> ताजे देणगी व्यवहार (Recent Donations)
+                </h5>
+                <a href="{{ url_for('admin.donations_list') }}" class="btn btn-sm btn-outline-dark fw-bold">
+                    सर्व देणग्या पहा <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-maroon">पावती क्र.</th>
+                            <th class="text-maroon">देणगीदार</th>
+                            <th class="text-maroon">रक्कम</th>
+                            <th class="text-maroon">स्थिती</th>
+                            <th class="text-maroon">दिनांक</th>
+                            <th class="text-maroon text-end">पावती</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if recent_donations %}
+                            {% for d in recent_donations %}
+                            <tr>
+                                <td><strong class="text-dark">{{ d.receipt_number or 'PENDING' }}</strong></td>
+                                <td>
+                                    <div class="fw-bold">{{ d.donor.full_name }}</div>
+                                    <small class="text-muted">{{ d.donor.phone }}</small>
+                                </td>
+                                <td><strong class="text-success fs-6">₹ {{ "{:,.2f}".format(d.amount) }}</strong></td>
+                                <td>
+                                    {% if d.status == 'PAID' %}
+                                    <span class="badge bg-success">यशस्वी (Paid)</span>
+                                    {% elif d.status == 'PENDING' %}
+                                    <span class="badge bg-warning text-dark">प्रलंबित</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">{{ d.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td><small class="text-muted">{{ d.created_at.strftime('%d-%m-%Y %H:%M') if d.created_at else '--' }}</small></td>
+                                <td class="text-end">
+                                    {% if d.status == 'PAID' and d.receipt_number %}
+                                    <a href="{{ url_for('donations.download_receipt', receipt_number=d.receipt_number) }}" class="btn btn-sm btn-outline-danger" target="_blank" title="PDF डाऊनलोड">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted small">--</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="6" class="text-center text-muted py-4">अजून कोणताही व्यवहार झालेला नाही.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- उजवी बाजू: थेट प्रक्षेपण स्थिती व जलद कृती -->
+    <div class="col-lg-4">
+        <!-- थेट आरती शॉर्टकट कार्ड -->
+        <div class="temple-card p-4 mb-4">
+            <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+                <i class="bi bi-broadcast text-danger me-2"></i> थेट आरती सद्य स्थिती
+            </h5>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="fw-bold">प्रक्षेपण स्थिती:</span>
+                {% if stream_setting and stream_setting.is_enabled %}
+                <span class="badge bg-success fs-6"><i class="bi bi-broadcast"></i> थेट सुरू आहे (LIVE)</span>
+                {% else %}
+                <span class="badge bg-secondary fs-6"><i class="bi bi-x-circle"></i> ऑफलाइन</span>
+                {% endif %}
+            </div>
+            <p class="small text-muted mb-3">
+                सध्याचा व्हिडिओ आयडी: <code>{{ stream_setting.video_id if stream_setting else 'jfKfPfyJRdk' }}</code>
+            </p>
+            <div class="d-grid">
+                <a href="{{ url_for('admin.manage_stream') }}" class="btn btn-temple-primary btn-sm py-2">
+                    <i class="bi bi-gear-fill me-1"></i> थेट प्रक्षेपण सेटिंग्ज बदला
+                </a>
+            </div>
+        </div>
+
+        <!-- ताज्या घोषणा -->
+        <div class="temple-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-maroon mb-0">
+                    <i class="bi bi-bell-fill text-warning me-2"></i> ताज्या घोषणा
+                </h5>
+                <a href="{{ url_for('admin.manage_updates') }}" class="small fw-bold text-danger">व्यवस्थापन &raquo;</a>
+            </div>
+            {% if latest_updates %}
+                <ul class="list-group list-group-flush border-0">
+                    {% for u in latest_updates %}
+                    <li class="list-group-item px-0 bg-transparent">
+                        <div class="fw-bold small text-dark">{{ u.title }}</div>
+                        <small class="text-muted d-block">{{ u.published_at.strftime('%d-%m-%Y') if u.published_at else '' }} | {{ u.category }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="small text-muted mb-0">कोणतीही घोषणा उपलब्ध नाही.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

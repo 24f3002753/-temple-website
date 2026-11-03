@@ -1,0 +1,142 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}बातम्या व उपक्रम व्यवस्थापन | Admin Updates{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-newspaper text-warning me-2"></i> बातम्या व उपक्रम व्यवस्थापन (News & Circulars)</h2>
+        <small class="text-muted">संस्थेची परिपत्रके, उत्सव कार्यक्रम आणि सामाजिक सेवा उपक्रम प्रसिद्ध करा</small>
+    </div>
+    <button class="btn btn-temple-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addUpdateModal">
+        <i class="bi bi-plus-circle-fill me-1"></i> नवीन बातमी प्रसिद्ध करा
+    </button>
+</div>
+
+<div class="temple-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-maroon">तारीख</th>
+                    <th class="text-maroon">वर्गवारी</th>
+                    <th class="text-maroon">शीर्षक</th>
+                    <th class="text-maroon">वर्णन</th>
+                    <th class="text-maroon">स्थिती</th>
+                    <th class="text-maroon text-end">कृती</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if updates %}
+                    {% for u in updates %}
+                    <tr>
+                        <td><small class="text-muted">{{ u.published_at.strftime('%d-%m-%Y') if u.published_at else '--' }}</small></td>
+                        <td><span class="badge bg-warning text-dark">{{ u.category }}</span></td>
+                        <td><strong class="text-maroon">{{ u.title }}</strong></td>
+                        <td><small class="text-muted">{{ u.description[:100] }}...</small></td>
+                        <td>
+                            {% if u.is_published %}
+                            <span class="badge bg-success">प्रकाशित</span>
+                            {% else %}
+                            <span class="badge bg-secondary">अप्रकाशित</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning text-dark fw-bold me-1" data-bs-toggle="modal" data-bs-target="#editUpdateModal{{ u.id }}">
+                                <i class="bi bi-pencil-square"></i> संपादन
+                            </button>
+                            <form method="POST" action="{{ url_for('admin.delete_update', update_id=u.id) }}" class="d-inline" onsubmit="return confirm('खात्री आहे का? ही बातमी काढली जाईल.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- संपादन मॉडाल -->
+                    <div class="modal fade" id="editUpdateModal{{ u.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fw-bold text-maroon">बातमी संपादन</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+                                </div>
+                                <form method="POST" action="{{ url_for('admin.edit_update', update_id=u.id) }}">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">शीर्षक <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="title" value="{{ u.title }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">वर्गवारी</label>
+                                            <select class="form-select" name="category">
+                                                <option value="धार्मिक उत्सव" {% if u.category == 'धार्मिक उत्सव' %}selected{% endif %}>धार्मिक उत्सव</option>
+                                                <option value="सामाजिक सेवा" {% if u.category == 'सामाजिक सेवा' %}selected{% endif %}>सामाजिक सेवा</option>
+                                                <option value="विकास प्रकल्प" {% if u.category == 'विकास प्रकल्प' %}selected{% endif %}>विकास प्रकल्प</option>
+                                                <option value="परिपत्रक" {% if u.category == 'परिपत्रक' %}selected{% endif %}>परिपत्रक</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">सविस्तर वर्णन <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" name="description" rows="4" required>{{ u.description }}</textarea>
+                                        </div>
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="pub{{ u.id }}" name="is_published" {% if u.is_published %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold" for="pub{{ u.id }}">वेबसाइटवर प्रकाशित ठेवा</label>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                                        <button type="submit" class="btn btn-temple-primary">बदल जतन करा</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">बातम्या उपलब्ध नाहीत.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- नवीन बातमी मॉडाल -->
+<div class="modal fade" id="addUpdateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold text-maroon"><i class="bi bi-plus-circle text-warning me-1"></i> नवीन बातमी किंवा उपक्रम जोडा</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_update') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">शीर्षक <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" placeholder="उदा. नवीन अन्नछत्र वेळेबाबत परिपत्रक" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">वर्गवारी <span class="text-danger">*</span></label>
+                        <select class="form-select" name="category">
+                            <option value="धार्मिक उत्सव" selected>धार्मिक उत्सव</option>
+                            <option value="सामाजिक सेवा">सामाजिक सेवा</option>
+                            <option value="विकास प्रकल्प">विकास प्रकल्प</option>
+                            <option value="परिपत्रक">परिपत्रक</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">सविस्तर वर्णन <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="description" rows="4" placeholder="भाविकांसाठी सविस्तर माहिती..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                    <button type="submit" class="btn btn-temple-primary">प्रसिद्ध करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

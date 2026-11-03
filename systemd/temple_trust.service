@@ -1,0 +1,27 @@
+[Unit]
+Description=Shree Temple Trust Flask Application (Gunicorn Service)
+After=network.target postgresql.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/temple_website
+Environment="PATH=/var/www/temple_website/venv/bin"
+EnvironmentFile=/var/www/temple_website/.env
+ExecStart=/var/www/temple_website/venv/bin/gunicorn -c gunicorn_config.py wsgi:app
+
+# आपोआप रीस्टार्ट धोरण
+Restart=always
+RestartSec=5
+KillSignal=SIGQUIT
+Type=notify
+StandardOutput=journal
+StandardError=journal
+
+# सुरक्षा सँडबॉक्सिंग (Systemd Hardening)
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

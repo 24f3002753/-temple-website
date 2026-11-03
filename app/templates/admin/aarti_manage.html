@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+
+{% block title %}आरती वेळापत्रक व्यवस्थापन | Admin Aarti Schedule{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">प्रशासक कक्ष</a></li>
+                <li class="breadcrumb-item active" aria-current="page">आरती वेळापत्रक</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <h1 class="h2 fw-bold text-maroon mb-0"><i class="bi bi-clock-history text-warning me-2"></i> दैनिक आरती वेळापत्रक व्यवस्थापन</h1>
+            <button class="btn btn-temple-primary py-2 px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#addAartiModal">
+                <i class="bi bi-plus-circle-fill me-1"></i> नवीन आरती जोडा
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="temple-card p-4">
+        <h4 class="fw-bold text-maroon mb-3 border-bottom pb-2">सध्याचे दैनिक वेळापत्रक</h4>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-maroon">क्रम</th>
+                        <th class="text-maroon">आरतीचे नाव</th>
+                        <th class="text-maroon">सुरू वेळ (२४ तास)</th>
+                        <th class="text-maroon">मराठी वेळ</th>
+                        <th class="text-maroon">तपशील</th>
+                        <th class="text-maroon">स्थिती</th>
+                        <th class="text-maroon text-end">कृती</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aarti in aartis %}
+                    <tr>
+                        <td class="fw-bold">{{ aarti.display_order }}</td>
+                        <td>
+                            <strong class="text-maroon fs-6">{{ aarti.aarti_name }}</strong>
+                        </td>
+                        <td><code>{{ aarti.start_time }}</code> - <code>{{ aarti.end_time or '--' }}</code></td>
+                        <td><span class="badge bg-warning-subtle text-dark border border-warning">{{ aarti.marathi_time }}</span></td>
+                        <td><small class="text-muted">{{ aarti.description or '--' }}</small></td>
+                        <td>
+                            {% if aarti.is_active %}
+                            <span class="badge bg-success">सक्रिय</span>
+                            {% else %}
+                            <span class="badge bg-secondary">बंद</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning text-dark fw-bold me-1" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editAartiModal{{ aarti.id }}">
+                                <i class="bi bi-pencil-square"></i> संपादन
+                            </button>
+                            <form method="POST" action="{{ url_for('admin.delete_aarti', aarti_id=aarti.id) }}" class="d-inline" onsubmit="return confirm('खात्री आहे का? ही आरती वेळापत्रकातून काढली जाईल.');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    <!-- संपादन मॉडाल (Edit Aarti Modal for each row) -->
+                    <div class="modal fade" id="editAartiModal{{ aarti.id }}" tabindex="-1" aria-labelledby="editAartiModalTitle{{ aarti.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title text-maroon fw-bold" id="editAartiModalTitle{{ aarti.id }}">आरती संपादन: {{ aarti.aarti_name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+                                </div>
+                                <form method="POST" action="{{ url_for('admin.edit_aarti', aarti_id=aarti.id) }}">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">आरतीचे नाव <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="aarti_name" value="{{ aarti.aarti_name }}" required>
+                                        </div>
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label fw-bold">सुरू वेळ (HH:MM)</label>
+                                                <input type="text" class="form-control" name="start_time" value="{{ aarti.start_time }}" placeholder="उदा. 05:30" required>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label fw-bold">समाप्ती वेळ (HH:MM)</label>
+                                                <input type="text" class="form-control" name="end_time" value="{{ aarti.end_time or '' }}" placeholder="उदा. 06:15">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">मराठी वेळ (Devanagari Format)</label>
+                                            <input type="text" class="form-control" name="marathi_time" value="{{ aarti.marathi_time or '' }}" placeholder="उदा. पहाटे ०५:३० वाजता" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">तपशील व महत्त्व</label>
+                                            <textarea class="form-control" name="description" rows="2">{{ aarti.description or '' }}</textarea>
+                                        </div>
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-6">
+                                                <label class="form-label fw-bold">प्रदर्शन क्रम</label>
+                                                <input type="number" class="form-control" name="display_order" value="{{ aarti.display_order }}" min="1">
+                                            </div>
+                                            <div class="col-6 d-flex align-items-end">
+                                                <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="active{{ aarti.id }}" name="is_active" {% if aarti.is_active %}checked{% endif %}>
+                                                    <label class="form-check-label fw-bold" for="active{{ aarti.id }}">सक्रिय ठेवा</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                                        <button type="submit" class="btn btn-temple-primary">बदल जतन करा</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- नवीन आरती जोडण्यासाठी मॉडाल (Add Aarti Modal) -->
+<div class="modal fade" id="addAartiModal" tabindex="-1" aria-labelledby="addAartiModalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title text-maroon fw-bold" id="addAartiModalTitle"><i class="bi bi-plus-circle text-warning me-1"></i> नवीन आरती जोडा</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_aarti') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">आरतीचे नाव <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="aarti_name" placeholder="उदा. विशेष शंखनाद पूजा" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold">सुरू वेळ (HH:MM)</label>
+                            <input type="text" class="form-control" name="start_time" placeholder="उदा. 10:30" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold">समाप्ती वेळ (HH:MM)</label>
+                            <input type="text" class="form-control" name="end_time" placeholder="उदा. 11:15">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">मराठी वेळ (Devanagari Format)</label>
+                        <input type="text" class="form-control" name="marathi_time" placeholder="उदा. सकाळी १०:३० वाजता" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">तपशील व महत्त्व</label>
+                        <textarea class="form-control" name="description" rows="2" placeholder="आरतीचे संक्षिप्त वर्णन..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">प्रदर्शन क्रम</label>
+                        <input type="number" class="form-control" name="display_order" value="6" min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                    <button type="submit" class="btn btn-temple-primary">आरती जतन करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

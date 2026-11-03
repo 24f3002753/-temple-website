@@ -1,0 +1,317 @@
+{% extends "layout.html" %}
+
+{% block title %}मुख्यपृष्ठ | अधिकृत दालन{% endblock %}
+
+{% block content %}
+<!-- १. भव्य हिरो विभाग (Hero Section with Direct Action CTAs) -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-shloka">॥ ॐ नमः शिवाय ॥ धर्मो रक्षति रक्षितः ॥</div>
+        <h1 class="hero-heading">{{ trust.trust_name if trust else 'श्री देवस्थान विश्वस्त व्यवस्था' }}</h1>
+        <p class="hero-desc">
+            {{ trust.introduction if trust and trust.introduction else 'महाराष्ट्रातील पावन भूमीवरील लाखो भाविकांचे आराध्य दैवत. मंदिराचे थेट आरती दर्शन घ्या, ऑनलाइन देणगी अर्पण करा आणि संस्थानाच्या धार्मिक व सामाजिक कार्यामध्ये सहभागी व्हा.' }}
+        </p>
+        
+        <!-- महत्त्वाचे प्रमुख दोन बटणे (Mobile & Desktop visible without scrolling) -->
+        <div class="hero-btn-group">
+            <a href="{{ url_for('public.live_aarti') }}" class="btn btn-temple-primary">
+                <span class="live-badge me-2">LIVE</span> थेट आरती दर्शन पहा <i class="bi bi-play-circle-fill ms-1"></i>
+            </a>
+            <a href="{{ url_for('public.donate') }}" class="btn btn-temple-gold">
+                <i class="bi bi-heart-fill text-danger me-1"></i> ऑनलाइन देणगी द्या <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- २. दैनिक आरती स्थिती व सूचना पट्टी (Live / Upcoming Aarti Highlight) -->
+<section class="py-3 bg-white border-bottom shadow-sm">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 col-md-7 mb-2 mb-md-0">
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <span class="badge bg-danger p-2 fs-6"><i class="bi bi-broadcast"></i> थेट आरती</span>
+                    <span class="fw-bold text-dark">पुढील आरती:</span>
+                    <span class="text-maroon fw-semibold" id="next-aarti-text">
+                        {% if aartis and aartis|length > 0 %}
+                            {{ aartis[0].aarti_name }} ({{ aartis[0].marathi_time }})
+                        {% else %}
+                            माध्यान्ह महाआरती (दुपारी १२:०० वाजता)
+                        {% endif %}
+                    </span>
+                    <span class="badge bg-warning-subtle text-dark border border-warning d-none d-sm-inline-block">
+                        वेळ शिल्लक: <span id="aarti-countdown">मोजणी सुरू आहे...</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5 text-md-end">
+                <a href="{{ url_for('public.live_aarti') }}" class="btn btn-sm btn-outline-danger fw-bold">
+                    वेळापत्रक पहा व थेट जुळा <i class="bi bi-arrow-right-short"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ३. मंदिराची ओळख व इतिहास (About Temple Section) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img src="{{ url_for('static', filename='images/hero-temple.svg') }}" alt="मंदिराची वास्तू" class="img-fluid rounded-4 shadow-lg border border-warning" style="width: 100%; height: 380px; object-fit: cover;">
+                    <div class="position-absolute bottom-0 start-0 m-3 p-3 bg-white rounded-3 shadow border-start border-4 border-warning d-none d-sm-block">
+                        <h6 class="mb-0 fw-bold text-maroon">प्राचीन हेमाडपंथी वास्तुकला</h6>
+                        <small class="text-muted">शतकानुशतकांची अखंड परंपरा व पावित्र्य</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="section-title-wrap text-start mb-3">
+                    <span class="section-badge">मंदिराची माहिती</span>
+                    <h2 class="section-title text-start pb-1">पावन तीर्थक्षेत्र आणि ऐतिहासिक वारसा</h2>
+                    <div class="section-divider justify-content-start">
+                        <div class="section-divider-line"></div>
+                        <i class="bi bi-brightness-high-fill section-divider-icon"></i>
+                        <div class="section-divider-line right"></div>
+                    </div>
+                </div>
+                <p class="lead text-muted">
+                    हे मंदिर महाराष्ट्रातील अत्यंत जागृत आणि पवित्र देवस्थानांपैकी एक मानले जाते. येथे दरवर्षी लाखो भाविक दर्शनासाठी राज्यभरातून व देशाच्या कानाकोपऱ्यातून उपस्थित राहतात.
+                </p>
+                <p>
+                    {{ trust.history[:280] if trust and trust.history else 'मंदिराची स्थापना अत्यंत पुरातन काळातील असून, येथील शांत, आध्यात्मिक वातावरण प्रत्येक भाविकाच्या मनाला आत्मिक समाधान आणि सकारात्मक ऊर्जा प्रदान करते.' }}...
+                </p>
+                <div class="mt-4">
+                    <a href="{{ url_for('public.about_temple') }}" class="btn btn-outline-dark fw-bold px-4 py-2 rounded-pill">
+                        अधिक सविस्तर माहिती वाचा <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ४. संस्थानाची माहिती व पारदर्शकता (About Trust Section) -->
+<section class="py-5 bg-light border-top border-bottom">
+    <div class="container">
+        <div class="section-title-wrap">
+            <span class="section-badge">संस्थेविषयी</span>
+            <h2 class="section-title">{{ trust.trust_name if trust else 'श्री देवस्थान विश्वस्त व्यवस्था' }}</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-flower1 section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+            <p class="text-muted mt-2 max-w-700 mx-auto">
+                मंदिर व्यवस्थापन, भाविकांच्या सेवा-सुविधा, पारदर्शकता आणि अखंड सामाजिक सेवेसाठी विश्वस्त व्यवस्था कटिबद्ध आहे.
+            </p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="temple-card p-4">
+                    <div class="rounded-circle bg-warning-subtle d-inline-flex p-3 mb-3 border border-warning">
+                        <i class="bi bi-shield-lock-fill fs-2 text-warning-emphasis"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-2">पारदर्शक व्यवस्थापन</h4>
+                    <p class="text-muted small">
+                        संस्थेची नोंदणी अधिकृत धर्मादाय आयुक्तांकडे असून सर्व आर्थिक जमा-खर्च व देणग्यांचे वार्षिक लेखापरीक्षण (Audit) केले जाते.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="temple-card p-4">
+                    <div class="rounded-circle bg-warning-subtle d-inline-flex p-3 mb-3 border border-warning">
+                        <i class="bi bi-egg-fried fs-2 text-warning-emphasis"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-2">नित्य अन्नछत्र व प्रसाद</h4>
+                    <p class="text-muted small">
+                        दररोज हजारो भाविकांना महाप्रसादाचे मोफत वाटप केले जाते. सण व उत्सवाच्या काळात विशेष अन्नदान अखंडपणे सुरू असते.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="temple-card p-4">
+                    <div class="rounded-circle bg-warning-subtle d-inline-flex p-3 mb-3 border border-warning">
+                        <i class="bi bi-hospital-fill fs-2 text-warning-emphasis"></i>
+                    </div>
+                    <h4 class="h5 fw-bold mb-2">आरोग्य व सामाजिक उपक्रम</h4>
+                    <p class="text-muted small">
+                        ग्रामीण भागातील रुग्णांसाठी मोफत आरोग्य शिबिरे, रुग्णवाहिका सेवा, आणि गरजू विद्यार्थ्यांसाठी शैक्षणिक साहित्याची मदत.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('public.trust') }}" class="btn btn-temple-primary px-4 py-2">
+                संस्थेचा संपूर्ण इतिहास व उद्दिष्टे पहा <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ५. अध्यक्षांचा संदेश (Chairperson's Message Section) -->
+<section class="py-5">
+    <div class="container">
+        <div class="temple-card p-4 p-md-5" style="border-left: 6px solid var(--color-saffron-primary);">
+            <div class="row align-items-center g-4">
+                <div class="col-md-4 text-center">
+                    <img src="{{ url_for('static', filename=chairperson.photograph if chairperson and chairperson.photograph else 'images/default-trustee.svg') }}" alt="अध्यक्ष छायाचित्र" class="trustee-photo img-fluid" style="width: 180px; height: 180px;">
+                    <h5 class="fw-bold mb-1 text-maroon mt-2">{{ chairperson.chairperson_name if chairperson else 'श्री. रमेशचंद्र जोशी' }}</h5>
+                    <span class="badge bg-warning-subtle text-dark border border-warning">{{ chairperson.designation if chairperson else 'अध्यक्ष' }}, विश्वस्त व्यवस्था</span>
+                </div>
+                <div class="col-md-8">
+                    <div class="section-title-wrap text-start mb-3">
+                        <span class="section-badge">अध्यक्षांचा संदेश</span>
+                        <h3 class="fw-bold text-maroon">भाविकांच्या सेवेसाठी आम्ही सदैव तत्पर</h3>
+                    </div>
+                    <blockquote class="blockquote fs-6 text-muted fst-italic">
+                        "{{ chairperson.message[:350] if chairperson and chairperson.message else 'श्री देवस्थान हे केवळ पूजेचे स्थान नसून सामाजिक एकात्मता आणि दातृत्वाचे पवित्र केंद्र आहे.' }}..."
+                    </blockquote>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap pt-3 border-top">
+                        <span class="fw-semibold text-dark">॥ देवो भूत्वा देवं यजेत् ॥</span>
+                        <a href="{{ url_for('public.trust') }}#chairperson" class="btn btn-sm btn-outline-warning text-dark fw-bold">
+                            संपूर्ण संदेश वाचा <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ६. विश्वस्त मंडळ झलक (Trustees Preview from Database) -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-title-wrap">
+            <span class="section-badge">विश्वस्त मंडळ</span>
+            <h2 class="section-title">संस्थेचे मार्गदर्शक व विश्वस्त</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-people-fill section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            {% if trustees %}
+                {% for t in trustees %}
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="trustee-card">
+                        <img src="{{ url_for('static', filename=t.photograph if t.photograph else 'images/default-trustee.svg') }}" alt="{{ t.full_name }}" class="trustee-photo">
+                        <div class="trustee-name">{{ t.full_name }}</div>
+                        <div class="trustee-role">{{ t.designation }}</div>
+                        <p class="small text-muted mb-0">{{ t.description or 'संस्थान सेवेत समर्पित' }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted">विश्वस्त माहिती लोड होत आहे...</div>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('public.trust') }}#members" class="btn btn-outline-dark fw-bold rounded-pill px-4">
+                सर्व विश्वस्त सदस्यांची यादी पहा <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ७. ताज्या बातम्या व उपक्रम झलक (Latest Announcements from Database) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <div class="section-title-wrap text-start mb-0">
+                    <span class="section-badge">बातम्या व उपक्रम</span>
+                    <h2 class="section-title text-start pb-0">संस्थानाची ताजी परिपत्रके व कार्यक्रम</h2>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="{{ url_for('public.updates') }}" class="btn btn-outline-warning text-dark fw-bold">
+                    सर्व बातम्या पहा <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% if updates %}
+                {% for u in updates %}
+                <div class="col-md-4">
+                    <div class="temple-card">
+                        <div class="card-ornate-header d-flex justify-content-between align-items-center">
+                            <span class="badge bg-warning text-dark fw-bold">{{ u.category }}</span>
+                            <small class="text-muted"><i class="bi bi-calendar3"></i> {{ u.published_at.strftime('%d-%m-%Y') if u.published_at else 'ताजी बातमी' }}</small>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="h5 fw-bold text-maroon mb-2">{{ u.title }}</h4>
+                            <p class="text-muted small">
+                                {{ u.description[:120] }}...
+                            </p>
+                            <a href="{{ url_for('public.updates') }}" class="fw-bold text-danger small">अधिक वाचा <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted">बातम्या उपलब्ध होत आहेत...</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ८. छायाचित्र संग्रह झलक (Gallery Preview from Database) -->
+<section class="py-5 bg-light border-top">
+    <div class="container">
+        <div class="section-title-wrap">
+            <span class="section-badge">दर्शन संग्रह</span>
+            <h2 class="section-title">दैनिक आरती व मंदिर क्षणचित्रे</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-camera-fill section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% if gallery_images %}
+                {% for g in gallery_images %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="gallery-card gallery-clickable" data-bs-toggle="modal" data-bs-target="#galleryModal" data-img-src="{{ url_for('static', filename=g.image_path) }}" data-title="{{ g.title }}">
+                        <img src="{{ url_for('static', filename=g.image_path) }}" alt="{{ g.title }}">
+                        <div class="gallery-caption">
+                            <div class="fw-bold">{{ g.title }}</div>
+                            <small>{{ g.category|upper }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted">छायाचित्रे उपलब्ध होत आहेत...</div>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('public.gallery') }}" class="btn btn-temple-gold text-dark px-4 py-2">
+                संपूर्ण छायाचित्र संग्रह पहा <i class="bi bi-images ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ९. थेट देणगी कॉल-टू-ॲक्शन बॅनर (Direct Donation Call to Action) -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--color-maroon) 0%, var(--color-maroon-dark) 100%); color: #FFF;">
+    <div class="container text-center">
+        <h2 class="fw-bold text-warning mb-3">देवस्थानच्या सेवा कार्यात आपले योगदान द्या</h2>
+        <p class="lead max-w-700 mx-auto mb-4 text-light-50">
+            आपण दिलेली प्रत्येक देणगी मंदिर संवर्धन, अन्नछत्र आणि सामाजिक जनकल्याणासाठी वापरली जाते. ऑनलाइन देणगी दिल्यानंतर तात्काळ अधिकृत पावती डाऊनलोड करा.
+        </p>
+        <a href="{{ url_for('public.donate') }}" class="btn btn-temple-gold text-dark fs-5 px-5 py-3 shadow-lg">
+            <i class="bi bi-heart-fill text-danger me-2"></i> आताच ऑनलाइन देणगी द्या
+        </a>
+    </div>
+</section>
+{% endblock %}

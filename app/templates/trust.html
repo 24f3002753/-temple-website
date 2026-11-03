@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+
+{% block title %}संस्थेविषयी | विश्वस्त व्यवस्था{% endblock %}
+
+{% block content %}
+<!-- अंतर्गत पानाचे हेडर -->
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">मुख्यपृष्ठ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">संस्थेविषयी</li>
+            </ol>
+        </nav>
+        <h1 class="h2 fw-bold text-maroon mb-0">{{ trust.trust_name if trust else 'श्री देवस्थान विश्वस्त व्यवस्था' }} (संस्थेचा परिचय)</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- ५.१ संस्थेचा परिचय (Trust Introduction) -->
+    <div class="row align-items-center g-5 mb-5">
+        <div class="col-lg-6">
+            <div class="section-title-wrap text-start mb-3">
+                <span class="section-badge">विश्वस्त व्यवस्था परिचय</span>
+                <h2 class="section-title text-start pb-1">सेवा, समर्पण आणि पारदर्शकता</h2>
+                <div class="section-divider justify-content-start">
+                    <div class="section-divider-line"></div>
+                    <i class="bi bi-shield-check section-divider-icon"></i>
+                    <div class="section-divider-line right"></div>
+                </div>
+            </div>
+            <p>
+                <strong>{{ trust.trust_name if trust else 'श्री देवस्थान विश्वस्त व्यवस्था' }}</strong> ही महाराष्ट्र सार्वजनिक विश्वस्त व्यवस्था अधिनियम, १९५० अन्वये धर्मादाय आयुक्त कार्यालयाकडे अधिकृतरीत्या नोंदणीकृत (नोंदणी क्र. {{ trust.registration_number if trust else 'महा./१२३४/ट्रस्ट' }}) संस्था आहे.
+            </p>
+            <p>
+                {{ trust.introduction if trust and trust.introduction else 'संस्थेची स्थापना भाविकांच्या सुविधेसाठी, मंदिराचे पारंपरिक पावित्र्य जपण्यासाठी आणि धार्मिक कार्यांसोबतच व्यापक सामाजिक दायित्व पार पाडण्याच्या उद्देशाने करण्यात आली. गेल्या अनेक दशकांपासून विश्वस्त व्यवस्था मंदिराचा कारभार अत्यंत पारदर्शक, निःपक्ष आणि सेवाभावी वृत्तीने चालवत आहे.' }}
+            </p>
+            <div class="row g-3 mt-2">
+                <div class="col-sm-6">
+                    <div class="p-3 bg-white border rounded shadow-sm">
+                        <small class="text-muted d-block">संस्था स्थापना वर्ष</small>
+                        <strong class="fs-5 text-maroon">{{ trust.establishment_year if trust else '१९६५' }} (अखंड सेवा)</strong>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-white border rounded shadow-sm">
+                        <small class="text-muted d-block">धर्मादाय नोंदणी क्र.</small>
+                        <strong class="fs-6 text-maroon">{{ trust.registration_number if trust else 'महा./१२३४/ट्रस्ट' }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='images/hero-temple.svg') }}" alt="संस्थान संकुल" class="img-fluid rounded-4 shadow border border-warning" style="width: 100%; height: 380px; object-fit: cover;">
+        </div>
+    </div>
+
+    <!-- ५.२ अध्यक्षांचा संदेश (Chairperson's Message) -->
+    <div class="temple-card p-4 p-md-5 mb-5" id="chairperson" style="border-top: 5px solid var(--color-saffron-primary); background: #FFFDF9;">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-4 text-center">
+                <img src="{{ url_for('static', filename=chairperson.photograph if chairperson and chairperson.photograph else 'images/default-trustee.svg') }}" alt="अध्यक्ष छायाचित्र" class="trustee-photo img-fluid" style="width: 190px; height: 190px;">
+                <h4 class="fw-bold mb-1 text-maroon mt-3">{{ chairperson.chairperson_name if chairperson else 'श्री. रमेशचंद्र जोशी' }}</h4>
+                <div class="badge bg-warning text-dark px-3 py-1 fs-6">{{ chairperson.designation if chairperson else 'अध्यक्ष' }}</div>
+                <p class="small text-muted mt-2">{{ trust.trust_name if trust else 'श्री देवस्थान विश्वस्त व्यवस्था' }}</p>
+            </div>
+            <div class="col-lg-8">
+                <div class="section-title-wrap text-start mb-3">
+                    <span class="section-badge">अध्यक्षांचे मनोगत</span>
+                    <h3 class="fw-bold text-maroon">धर्म, भक्ती आणि समाजकल्याणाचा संगम</h3>
+                </div>
+                <p class="text-muted lead fs-6">
+                    "{{ chairperson.message if chairperson and chairperson.message else 'श्री देवस्थानच्या पावन भूमीत येणाऱ्या प्रत्येक भाविकाला आत्मिक शांती, ऊर्जा आणि सेवाभाव मिळावा यासाठी विश्वस्त मंडळ कटिबद्ध आहे.' }}"
+                </p>
+                {% if chairperson and chairperson.vision %}
+                <div class="p-3 bg-white rounded border border-warning-subtle mt-3">
+                    <h6 class="fw-bold text-maroon mb-1"><i class="bi bi-eye-fill text-warning me-1"></i> संस्थेचे भविष्यकालीन व्हिजन:</h6>
+                    <p class="text-muted small mb-0">{{ chairperson.vision }}</p>
+                </div>
+                {% endif %}
+                <div class="text-end fw-bold text-maroon mt-3">
+                    - {{ chairperson.chairperson_name if chairperson else 'रमेशचंद्र जोशी' }} ({{ chairperson.designation if chairperson else 'अध्यक्ष' }})
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ५.३ विश्वस्त मंडळ (Board of Trustees - Dynamic from Database) -->
+    <div class="mb-5" id="members">
+        <div class="section-title-wrap">
+            <span class="section-badge">प्रशासकीय रचना</span>
+            <h2 class="section-title">विश्वस्त मंडळ (Trustees)</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-person-badge-fill section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+            <p class="text-muted mt-2">मंदिराचे दैनंदिन नियोजन व प्रशासकीय निर्णय घेणारे सन्माननीय विश्वस्त सदस्य</p>
+        </div>
+
+        <!-- ४ कार्डे प्रति ओळ मोठ्या स्क्रीनवर, २ टॅब्लेटवर, १-२ मोबाईलवर -->
+        <div class="row g-4">
+            {% if members %}
+                {% for member in members %}
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="trustee-card">
+                        <img src="{{ url_for('static', filename=member.photograph if member.photograph else 'images/default-trustee.svg') }}" alt="{{ member.full_name }}" class="trustee-photo">
+                        <div class="trustee-name">{{ member.full_name }}</div>
+                        <div class="trustee-role">{{ member.designation }}</div>
+                        <p class="small text-muted mb-0">{{ member.description or 'संस्थान सेवेत समर्पित' }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted py-4">विश्वस्त सदस्यांची माहिती उपलब्ध होत आहे...</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ५.४ संस्थेची उद्दिष्टे व उपक्रम (Objectives & Activities) -->
+    <div class="mb-5">
+        <div class="section-title-wrap">
+            <span class="section-badge">संस्थेची उद्दिष्टे</span>
+            <h2 class="section-title">प्रमुख उपक्रम व जबाबदाऱ्या</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-stars section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-building-gear"></i></div>
+                    <h5 class="fw-bold text-maroon">मंदिराचे व्यवस्थापन</h5>
+                    <p class="small text-muted">दैनंदिन पूजा-अर्चा, पुजारी व्यवस्थापन, दर्शन रांगांचे सुयोग्य नियोजन आणि मंदिराच्या पावित्र्याची अखंड जपणूक.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-bell-fill"></i></div>
+                    <h5 class="fw-bold text-maroon">धार्मिक कार्यक्रम व उत्सव</h5>
+                    <p class="small text-muted">महाशिवरात्री, नवरात्र, श्रावण मास आणि पालखी सोहळ्यांचे भव्य व शिस्तबद्ध आयोजन.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-basket3-fill"></i></div>
+                    <h5 class="fw-bold text-maroon">अखंड नित्य अन्नदान</h5>
+                    <p class="small text-muted">मंदिरात येणाऱ्या कोणत्याही भाविकाला उपाशी न ठेवता दररोज शुद्ध, सात्त्विक महाप्रसाद मोफत दिला जातो.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-heart-pulse-fill"></i></div>
+                    <h5 class="fw-bold text-maroon">सामाजिक सेवा व आरोग्य</h5>
+                    <p class="small text-muted">गरजू लोकांसाठी मोफत आरोग्य शिबिरे, रुग्णवाहिका, रक्तदाने आणि आपत्कालीन मदतीचे उपक्रम.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-trash3-fill"></i></div>
+                    <h5 class="fw-bold text-maroon">स्वच्छता आणि पर्यावरण</h5>
+                    <p class="small text-muted">मंदिर परिसर स्वच्छ व हरित ठेवण्यासाठी २४ तास स्वच्छता मोहीम, वृक्षारोपण आणि कचरा व्यवस्थापन.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="temple-card p-4">
+                    <div class="text-warning-emphasis fs-2 mb-2"><i class="bi bi-house-door-fill"></i></div>
+                    <h5 class="fw-bold text-maroon">भाविक सुविधा व विकास कामे</h5>
+                    <p class="small text-muted">सुलभ दर्शन मार्ग, भक्तनिवास, पिण्याचे शुद्ध पाणी, हिरकणी कक्ष (मातांसाठी), आणि डिजिटल देणगी सुविधा.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ५.५ पारदर्शकता आणि कागदपत्रे (Transparency & Public Documents) -->
+    <div class="temple-card p-4 p-md-5 bg-white" id="documents">
+        <div class="section-title-wrap mb-4">
+            <span class="section-badge">पारदर्शकता</span>
+            <h2 class="section-title">अधिकृत कागदपत्रे व अहवाल</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-file-earmark-check-fill section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+            <p class="text-muted mt-2">संस्थेचे अधिकृत अहवाल सार्वजनिक माहिती आणि पारदर्शकतेसाठी उपलब्ध आहेत.</p>
+        </div>
+
+        <div class="row g-4">
+            {% if documents %}
+                {% for doc in documents %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center p-3 border rounded-3 bg-light">
+                        <i class="bi bi-file-earmark-pdf-fill fs-1 text-danger me-3"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark">{{ doc.title }}</div>
+                            <small class="text-muted">{{ doc.document_type }} | वर्ष: {{ doc.published_year }}</small>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-outline-dark fw-bold" onclick="alert('अधिकृत दस्तऐवज: {{ doc.title }}'); return false;">
+                            <i class="bi bi-download"></i> पहा
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted">कागदपत्रे लवकरच अपलोड केली जातील.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

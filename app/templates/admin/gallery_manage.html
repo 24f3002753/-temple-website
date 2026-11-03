@@ -1,0 +1,86 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}छायाचित्र संग्रह व्यवस्थापन | Admin Gallery{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-images text-warning me-2"></i> छायाचित्र संग्रह व्यवस्थापन (Photo Gallery CMS)</h2>
+        <small class="text-muted">दैनिक आरती, सण-उत्सव आणि मंदिर परिसराची छायाचित्रे जोडा किंवा संपादित करा</small>
+    </div>
+    <button class="btn btn-temple-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addImageModal">
+        <i class="bi bi-cloud-arrow-up-fill me-1"></i> नवीन छायाचित्र जोडा
+    </button>
+</div>
+
+<div class="temple-card p-4">
+    <div class="row g-4">
+        {% if images %}
+            {% for img in images %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border">
+                    <img src="{{ url_for('static', filename=img.image_path) }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ img.title }}">
+                    <div class="card-body">
+                        <span class="badge bg-warning text-dark mb-1">{{ img.category|upper }}</span>
+                        <h6 class="card-title fw-bold text-maroon mb-1">{{ img.title }}</h6>
+                        <small class="text-muted d-block">{{ img.description or 'वर्णन उपलब्ध नाही' }}</small>
+                    </div>
+                    <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ img.uploaded_at.strftime('%d-%m-%Y') if img.uploaded_at else '' }}</small>
+                        <form method="POST" action="{{ url_for('admin.delete_gallery_image', image_id=img.id) }}" onsubmit="return confirm('हे छायाचित्र काढायचे का?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> हटवा</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center text-muted py-5">छायाचित्रे उपलब्ध नाहीत.</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- नवीन छायाचित्र मॉडाल (Add Image Modal) -->
+<div class="modal fade" id="addImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold text-maroon"><i class="bi bi-image text-warning me-1"></i> नवीन छायाचित्र जोडा</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_gallery_image') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">छायाचित्र शीर्षक <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" placeholder="उदा. महाशिवरात्री दीप प्रज्वलन" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">वर्गवारी (Category) <span class="text-danger">*</span></label>
+                        <select class="form-select" name="category" required>
+                            <option value="aarti">दैनिक आरती (aarti)</option>
+                            <option value="festival">सण व उत्सव (festival)</option>
+                            <option value="campus">मंदिर परिसर (campus)</option>
+                            <option value="social">सामाजिक सेवा व अन्नछत्र (social)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">छायाचित्र संचिका पथ (Image Path) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="image_path" value="images/sample-gallery.svg" required>
+                        <small class="text-muted">डीफॉल्ट: <code>images/sample-gallery.svg</code> किंवा <code>images/hero-temple.svg</code></small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">संक्षिप्त वर्णन</label>
+                        <textarea class="form-control" name="description" rows="2" placeholder="छायाचित्राचे वर्णन..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                    <button type="submit" class="btn btn-temple-primary">छायाचित्र जतन करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

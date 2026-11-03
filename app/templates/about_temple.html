@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}मंदिराची माहिती व इतिहास{% endblock %}
+
+{% block content %}
+<!-- अंतर्गत पानाचे हेडर बॅनर -->
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">मुख्यपृष्ठ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">मंदिराची माहिती</li>
+            </ol>
+        </nav>
+        <h1 class="h2 fw-bold text-maroon mb-0">मंदिराचा इतिहास आणि वास्तुकला</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- १. मंदिराचा इतिहास -->
+    <div class="row align-items-center g-5 mb-5">
+        <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='images/hero-temple.svg') }}" alt="मंदिराची वास्तू" class="img-fluid rounded-4 shadow border border-warning" style="width: 100%; height: 380px; object-fit: cover;">
+        </div>
+        <div class="col-lg-6">
+            <div class="section-title-wrap text-start mb-3">
+                <span class="section-badge">प्राचीन वारसा</span>
+                <h2 class="section-title text-start pb-1">अखंड भक्तीची शतकानुशतके</h2>
+                <div class="section-divider justify-content-start">
+                    <div class="section-divider-line"></div>
+                    <i class="bi bi-bank section-divider-icon"></i>
+                    <div class="section-divider-line right"></div>
+                </div>
+            </div>
+            <p>
+                श्री देवस्थान हे महाराष्ट्रातील अत्यंत जागृत आणि लाखो भक्तांचे श्रद्धास्थान आहे. या देवस्थानाचा इतिहास अनेक शतके जुना असून यादवकालीन हेमाडपंथी स्थापत्यकलेचा हा एक उत्कृष्ट नमुना मानला जातो.
+            </p>
+            <p>
+                इतिहासकारांच्या मते, मंदिराचे मूळ बांधकाम बाराव्या शतकातील असून छत्रपती शिवाजी महाराजांच्या काळात आणि नंतर पेशवे काळात या मंदिराचा जीर्णोद्धार करण्यात आला. दगडी कोरीव काम, भव्य दीपमाळा आणि नक्षीदार खांब हे या मंदिराचे प्रमुख वैशिष्ट्य आहे.
+            </p>
+            <div class="p-3 bg-warning-subtle rounded-3 border-start border-4 border-warning">
+                <p class="mb-0 fw-semibold text-dark">
+                    <i class="bi bi-info-circle-fill text-warning me-2"></i>
+                    मंदिराच्या गाभाऱ्यात प्रवेश करताना भाविकांना एक अलौकिक शांतता आणि दिव्य सकारात्मकतेची अनुभूती येते.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- २. प्रमुख वैशिष्ट्ये आणि वास्तुकला -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="temple-card p-4">
+                <div class="text-maroon fs-1 mb-2"><i class="bi bi-gem"></i></div>
+                <h4 class="h5 fw-bold text-maroon">पवित्र गाभारा</h4>
+                <p class="text-muted small">
+                    मुख्य गाभाऱ्यामध्ये स्थापित मूर्ती अत्यंत तेज:पुंज असून अखंड नंदादीप तेवत असतो. भाविकांच्या कल्याणासाठी दररोज विविध वैदिक मंत्रोच्चारात अभिषेक संपन्न होतात.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="temple-card p-4">
+                <div class="text-maroon fs-1 mb-2"><i class="bi bi-columns-gap"></i></div>
+                <h4 class="h5 fw-bold text-maroon">हेमाडपंथी सभामंडप</h4>
+                <p class="text-muted small">
+                    विशाल दगडी खांबांवर आधारलेला सभामंडप शेकडो वर्षांचा इतिहास साक्ष ठेवून उभा आहे. खांबांवर पौराणिक प्रसंगांची अप्रतिम शिल्पे कोरलेली आहेत.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="temple-card p-4">
+                <div class="text-maroon fs-1 mb-2"><i class="bi bi-fire"></i></div>
+                <h4 class="h5 fw-bold text-maroon">ऐतिहासिक दीपमाळा</h4>
+                <p class="text-muted small">
+                    मंदिराच्या प्रांगणात उभ्या असणाऱ्या दोन भव्य दगडी दीपमाळा त्रिपुरारी पौर्णिमा आणि महाशिवरात्रीच्या दिवशी हजारो दिव्यांनी प्रज्वलित केल्या जातात.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ३. वार्षिक उत्सव आणि सण -->
+    <div class="p-4 p-md-5 bg-light rounded-4 border mb-5">
+        <div class="section-title-wrap mb-4">
+            <span class="section-badge">धार्मिक उत्सव</span>
+            <h2 class="section-title">मंदिरातील प्रमुख वार्षिक उत्सव</h2>
+            <div class="section-divider">
+                <div class="section-divider-line"></div>
+                <i class="bi bi-calendar-event section-divider-icon"></i>
+                <div class="section-divider-line right"></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="bg-white p-3 rounded-3 shadow-sm border text-center h-100">
+                    <h5 class="fw-bold text-maroon">महाशिवरात्री महोत्सव</h5>
+                    <span class="badge bg-warning text-dark mb-2">माघ वद्य त्रयोदशी</span>
+                    <p class="small text-muted mb-0">अखंड हरिनाम सप्ताह, भजन, कीर्तन आणि लाखो भाविकांचे दर्शन व महाप्रसाद.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="bg-white p-3 rounded-3 shadow-sm border text-center h-100">
+                    <h5 class="fw-bold text-maroon">चैत्र नवरात्र उत्सव</h5>
+                    <span class="badge bg-warning text-dark mb-2">चैत्र शुद्ध प्रतिपदा</span>
+                    <p class="small text-muted mb-0">घटस्थापना, नवचंडी यज्ञ आणि देवीच्या विविध रूपांची पारंपरिक पूजा व दर्शन.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="bg-white p-3 rounded-3 shadow-sm border text-center h-100">
+                    <h5 class="fw-bold text-maroon">श्रावण मास आराधना</h5>
+                    <span class="badge bg-warning text-dark mb-2">श्रावण महिना</span>
+                    <p class="small text-muted mb-0">प्रत्येक सोमवारी विशेष रुद्राभिषेक, शिवलीलामृत पारायण आणि दीप प्रज्वलन.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="bg-white p-3 rounded-3 shadow-sm border text-center h-100">
+                    <h5 class="fw-bold text-maroon">त्रिपुरारी पौर्णिमा दीपोत्सव</h5>
+                    <span class="badge bg-warning text-dark mb-2">कार्तिक पौर्णिमा</span>
+                    <p class="small text-muted mb-0">संपूर्ण मंदिर परिसरात ५१,००० दिव्यांची भव्य आरास व दीपमाळ प्रज्वलन सोहळा.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ४. भाविकांसाठी मार्गदर्शक सूचना (Rules & Etiquette) -->
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+            <h3 class="fw-bold text-maroon mb-3"><i class="bi bi-shield-check text-warning me-2"></i> भाविकांसाठी दर्शन नियम व शिस्त</h3>
+            <ul class="list-group list-group-flush border-0">
+                <li class="list-group-item bg-transparent ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i> मंदिरात प्रवेश करताना पारंपारिक आणि शालीन पोशाख परिधान करावा.</li>
+                <li class="list-group-item bg-transparent ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i> मुख्य गाभाऱ्यात मोबाईल फोन सायलेंट मोडवर ठेवावा अथवा छायाचित्रण टाळावे.</li>
+                <li class="list-group-item bg-transparent ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i> पादत्राणे (चप्पल/बूट) मंदिर परिसराबाहेर नियुक्त पादत्राण स्टँडवरच ठेवावीत.</li>
+                <li class="list-group-item bg-transparent ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i> दर्शन रांगेमध्ये ज्येष्ठ नागरिक, दिव्यांग आणि लहान मुलांसाठी प्राधान्य द्यावे.</li>
+                <li class="list-group-item bg-transparent ps-0"><i class="bi bi-check-circle-fill text-success me-2"></i> मंदिर परिसर स्वच्छ ठेवण्यासाठी कचरा केवळ कचराकुंडीतच टाकावा.</li>
+            </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+            <div class="temple-card p-4 bg-warning-subtle">
+                <h4 class="fw-bold text-maroon mb-2">थेट घरबसल्या दर्शन घ्या</h4>
+                <p class="text-muted">आपण कोणत्याही कारणाने मंदिरात प्रत्यक्ष येऊ शकत नसल्यास थेट आरती दर्शन सुविधेचा लाभ घ्या.</p>
+                <a href="{{ url_for('public.live_aarti') }}" class="btn btn-temple-primary">
+                    <i class="bi bi-broadcast me-1"></i> थेट आरती दर्शन सुरू करा
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="#FFF9EE" />
+  <circle cx="100" cy="100" r="95" fill="#FFFFFF" stroke="#D4AF37" stroke-width="3" />
+  <circle cx="100" cy="75" r="38" fill="#D4AF37" opacity="0.35" />
+  <path d="M 40 170 Q 100 110 160 170 Z" fill="#D4AF37" opacity="0.35" />
+  <!-- Traditional Shawl / Uparane accent -->
+  <path d="M 65 140 Q 100 170 135 140 L 145 170 Q 100 190 55 170 Z" fill="#E65100" opacity="0.75" />
+</svg>

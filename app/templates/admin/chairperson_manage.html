@@ -1,0 +1,66 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}अध्यक्षांचा संदेश व्यवस्थापन | Admin Chairperson{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-chat-quote-fill text-warning me-2"></i> अध्यक्षांचा संदेश व्यवस्थापन</h2>
+        <small class="text-muted">संस्थान अध्यक्षांचे छायाचित्र, संदेश आणि भावी व्हिजन अद्ययावत करा</small>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="temple-card p-4 p-md-5">
+            <h4 class="fw-bold text-maroon mb-3 border-bottom pb-2">अध्यक्षांचे मनोगत संपादन</h4>
+
+            <form method="POST" action="{{ url_for('admin.manage_chairperson') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-7">
+                        <label class="form-label fw-bold text-dark">अध्यक्षांचे पूर्ण नाव <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-temple" name="chairperson_name" value="{{ chairperson.chairperson_name if chairperson else '' }}" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-dark">पदनाम</label>
+                        <input type="text" class="form-control form-control-temple" name="designation" value="{{ chairperson.designation if chairperson else 'अध्यक्ष' }}" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">छायाचित्र संचिका पथ (Photo Path)</label>
+                    <input type="text" class="form-control form-control-temple" name="photograph" value="{{ chairperson.photograph if chairperson else 'images/default-trustee.svg' }}">
+                    <small class="text-muted">डीफॉल्ट: <code>images/default-trustee.svg</code></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-dark">सविस्तर संदेश (Detailed Message) <span class="text-danger">*</span></label>
+                    <textarea class="form-control form-control-temple" name="message" rows="6" required>{{ chairperson.message if chairperson else '' }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">संस्थेचे भावी व्हिजन व उद्दिष्टे (Vision & Future Objectives)</label>
+                    <textarea class="form-control form-control-temple" name="vision" rows="3">{{ chairperson.vision if chairperson else '' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-temple-primary py-2 px-4">
+                    <i class="bi bi-check-circle-fill me-1"></i> संदेश जतन करा
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- प्रिव्ह्यू कार्ड -->
+    <div class="col-lg-4">
+        <div class="temple-card p-4 text-center">
+            <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">सद्य प्रिव्ह्यू</h5>
+            <img src="{{ url_for('static', filename=chairperson.photograph if chairperson and chairperson.photograph else 'images/default-trustee.svg') }}" alt="अध्यक्ष" class="trustee-photo mb-2">
+            <h5 class="fw-bold text-maroon mb-1">{{ chairperson.chairperson_name if chairperson else '' }}</h5>
+            <span class="badge bg-warning text-dark mb-3">{{ chairperson.designation if chairperson else '' }}</span>
+            <p class="small text-muted fst-italic">"{{ chairperson.message[:150] if chairperson and chairperson.message else '' }}..."</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

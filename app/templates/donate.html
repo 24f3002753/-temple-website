@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+
+{% block title %}ऑनलाइन देणगी | श्री देवस्थान विश्वस्त व्यवस्था{% endblock %}
+
+{% block content %}
+<!-- अंतर्गत पानाचे हेडर -->
+<div class="py-4 bg-light border-bottom">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{{ url_for('public.index') }}">मुख्यपृष्ठ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">ऑनलाइन देणगी</li>
+            </ol>
+        </nav>
+        <h1 class="h2 fw-bold text-maroon mb-0">ऑनलाइन देणगी (Online Donation)</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- परिचय संदेश -->
+            <div class="text-center mb-4">
+                <div class="section-badge mb-2">सर्वसाधारण देणगी निधी</div>
+                <h2 class="fw-bold text-maroon">मंदिराच्या पवित्र कार्यात आपले योगदान</h2>
+                <p class="text-muted max-w-700 mx-auto">
+                    श्री देवस्थान विश्वस्त व्यवस्थेच्या धार्मिक, सामाजिक, अन्नछत्र व मंदिर संवर्धन उपक्रमांसाठी भाविक येथून थेट ऑनलाइन देणगी देऊ शकतात. देणगी यशस्वी झाल्यानंतर तात्काळ संगणकीय पावती (PDF) उपलब्ध होईल.
+                </p>
+            </div>
+
+            <!-- देणगी फॉर्म कंटेनर -->
+            <div class="donation-box">
+                <!-- एरर अलर्ट कंटेनर -->
+                <div id="donation-error-alert" class="alert alert-danger d-none mb-4 border-2" role="alert"></div>
+
+                <form id="donation-form" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+
+                    <!-- पायरी १: रक्कम निवड -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-maroon fs-5">
+                            <i class="bi bi-currency-rupee text-warning me-1"></i> देणगीची रक्कम निवडा किंवा प्रविष्ट करा:
+                        </label>
+                        
+                        <!-- जलद रक्कम निवड बटणे (₹१०१, ₹५०१, ₹१००१, ₹५००१) -->
+                        <div class="amount-btn-group">
+                            <button type="button" class="amount-btn" data-amount="101">₹ १०१</button>
+                            <button type="button" class="amount-btn active" data-amount="501">₹ ५०१</button>
+                            <button type="button" class="amount-btn" data-amount="1001">₹ १,००१</button>
+                            <button type="button" class="amount-btn" data-amount="5001">₹ ५,००१</button>
+                        </div>
+
+                        <!-- सानुकूल रक्कम इनपुट -->
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light fw-bold text-maroon border-2">₹</span>
+                            <input type="number" class="form-control form-control-temple fw-bold fs-4" id="donation-amount" name="amount" value="501" min="10" placeholder="इतर इच्छित रक्कम टाका" required>
+                        </div>
+                        <small class="text-muted mt-1 d-block"><i class="bi bi-info-circle"></i> आपण वरीलपैकी एक रक्कम निवडू शकता किंवा स्वतः इच्छित रक्कम भरू शकता.</small>
+                    </div>
+
+                    <!-- पायरी २: देणगीदाराची वैयक्तिक माहिती -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label for="donor-name" class="form-label fw-semibold text-dark">
+                                <i class="bi bi-person-fill text-warning me-1"></i> पूर्ण नाव (Full Name) <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control form-control-temple" id="donor-name" name="full_name" placeholder="उदा. राजेश दत्तात्रय कुलकर्णी" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="donor-email" class="form-label fw-semibold text-dark">
+                                <i class="bi bi-envelope-fill text-warning me-1"></i> ई-मेल पत्ता (Email) <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" class="form-control form-control-temple" id="donor-email" name="email" placeholder="पावती पाठवण्यासाठी ईमेल" required>
+                            <small class="text-muted">या ईमेलवर देणगी पावती PDF पाठवली जाईल.</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="donor-phone" class="form-label fw-semibold text-dark">
+                                <i class="bi bi-telephone-fill text-warning me-1"></i> मोबाईल क्रमांक (Mobile) <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel" class="form-control form-control-temple" id="donor-phone" name="phone" placeholder="१० अंकी मोबाईल क्रमांक" maxlength="10" required>
+                            <small class="text-muted">SMS पुष्टीकरणासाठी वापरला जाईल.</small>
+                        </div>
+                    </div>
+
+                    <!-- देणगी प्रकार: एकच सर्वसाधारण पर्याय -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
+                            <div>
+                                <strong class="text-maroon">देणगी प्रकार:</strong> सर्वसाधारण देवस्थान निधी (General Temple Fund)
+                                <div class="small text-muted">सर्व देणग्या संस्थेच्या धर्मादाय उद्दिष्टांनुसार वापरल्या जातात.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- देणगी सबमिट बटण -->
+                    <div class="d-grid mb-4">
+                        <button type="submit" id="btn-submit-donation" class="btn btn-temple-primary py-3 fs-5">
+                            देणगी द्या <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- सुरक्षा व गोपनीयता हमी -->
+                    <div class="border-top pt-3 text-center">
+                        <div class="d-flex justify-content-center align-items-center flex-wrap gap-4 text-muted small">
+                            <span><i class="bi bi-shield-lock-fill text-success me-1"></i> २५६-बिट SSL सुरक्षित पेमेंट</span>
+                            <span><i class="bi bi-credit-card-2-front-fill text-primary me-1"></i> Razorpay अधिकृत गेटवे</span>
+                            <span><i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i> तात्काळ अधिकृत पावती</span>
+                        </div>
+                        <p class="text-muted x-small mt-2 mb-0">
+                            नोंद: संस्थेस प्राप्त होणाऱ्या सर्व देणग्या अधिकृत धर्मादाय नियमांनुसार जमा केल्या जातात.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Razorpay Checkout SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="{{ url_for('static', filename='js/donation.js') }}"></script>
+{% endblock %}

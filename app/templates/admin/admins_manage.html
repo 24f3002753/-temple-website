@@ -1,0 +1,152 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block title %}प्रशासक खाती | Admin Accounts{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold text-maroon mb-0"><i class="bi bi-shield-lock-fill text-warning me-2"></i> प्रशासक खाती व सुरक्षा (Admin Users & Audit)</h2>
+        <small class="text-muted">संस्थेचे अधिकृत प्रशासक, पासवर्ड व्यवस्थापन व ऑडिट लॉग्स</small>
+    </div>
+    <button class="btn btn-temple-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+        <i class="bi bi-person-plus-fill me-1"></i> नवीन प्रशासक जोडा
+    </button>
+</div>
+
+<div class="row g-4">
+    <!-- डावी बाजू: प्रशासक खाती यादी -->
+    <div class="col-lg-7">
+        <div class="temple-card p-4">
+            <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">सक्रिय प्रशासक</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-maroon">नाव</th>
+                            <th class="text-maroon">वापरकर्ता नाव</th>
+                            <th class="text-maroon">भूमिका</th>
+                            <th class="text-maroon">स्थिती</th>
+                            <th class="text-maroon text-end">कृती</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if admins %}
+                            {% for a in admins %}
+                            <tr>
+                                <td><strong class="text-dark">{{ a.full_name }}</strong></td>
+                                <td><code>{{ a.username }}</code></td>
+                                <td><span class="badge bg-warning text-dark">{{ a.role }}</span></td>
+                                <td>
+                                    {% if a.is_active %}
+                                    <span class="badge bg-success">सक्रिय</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">निष्क्रिय</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-warning text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#pwdModal{{ a.id }}">
+                                        <i class="bi bi-key-fill"></i> पासवर्ड बदला
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- पासवर्ड बदल मॉडाल -->
+                            <div class="modal fade" id="pwdModal{{ a.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-light">
+                                            <h5 class="modal-title fw-bold text-maroon">पासवर्ड बदला: {{ a.username }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+                                        </div>
+                                        <form method="POST" action="{{ url_for('admin.change_password', admin_id=a.id) }}">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">नवीन गुप्तशब्द (New Password) <span class="text-danger">*</span></label>
+                                                    <input type="password" class="form-control" name="new_password" required minlength="6">
+                                                    <small class="text-muted">किमान ६ अक्षरे असावीत.</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                                                <button type="submit" class="btn btn-temple-primary">पासवर्ड अद्ययावत करा</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- उजवी बाजू: ताजे सुरक्षा ऑडिट लॉग्स (Audit Logs) -->
+    <div class="col-lg-5">
+        <div class="temple-card p-4">
+            <h5 class="fw-bold text-maroon mb-3 border-bottom pb-2">
+                <i class="bi bi-journal-text text-warning me-1"></i> ताजे ऑडिट लॉग्स (Audit Trail)
+            </h5>
+            {% if audit_logs %}
+                <ul class="list-group list-group-flush small">
+                    {% for log in audit_logs %}
+                    <li class="list-group-item px-0 bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="badge bg-secondary">{{ log.action }}</span>
+                            <small class="text-muted">{{ log.created_at.strftime('%d-%m %H:%M') if log.created_at else '' }}</small>
+                        </div>
+                        <div class="text-dark">{{ log.details }}</div>
+                        <small class="text-muted">IP: {{ log.ip_address or '127.0.0.1' }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="small text-muted mb-0">ऑडिट नोंदी उपलब्ध नाहीत.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- नवीन प्रशासक जोडण्यासाठी मॉडाल -->
+<div class="modal fade" id="addAdminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold text-maroon"><i class="bi bi-person-plus text-warning me-1"></i> नवीन प्रशासक जोडा</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.add_admin') }}">
+                <div class="modal-body">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">पूर्ण नाव <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="full_name" placeholder="उदा. आनंद जोशी" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">वापरकर्ता नाव (Username) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="username" placeholder="उदा. anand_trustee" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">भूमिका (Role)</label>
+                        <select class="form-select" name="role">
+                            <option value="superadmin">मुख्य प्रशासक (Superadmin)</option>
+                            <option value="trustee" selected>विश्वस्त व्यवस्थापक (Trustee)</option>
+                            <option value="editor">संपादक (Editor)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">गुप्तशब्द (Password) <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" name="password" required minlength="6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">रद्द करा</button>
+                    <button type="submit" class="btn btn-temple-primary">खाते तयार करा</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

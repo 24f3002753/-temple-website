@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A1505" />
+      <stop offset="100%" stop-color="#9E2A0B" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="450" fill="url(#bgGrad)" />
+  <circle cx="300" cy="210" r="130" fill="#FFF8E7" opacity="0.15" />
+  <!-- Traditional Diya / Aarti Lamp Graphic in center -->
+  <path d="M 230 260 Q 300 310 370 260 Q 300 280 230 260 Z" fill="#D4AF37" stroke="#FFF2A3" stroke-width="3" />
+  <!-- Flame -->
+  <path d="M 300 170 Q 330 230 300 260 Q 270 230 300 170 Z" fill="#FFB300" />
+  <path d="M 300 200 Q 315 235 300 255 Q 285 235 300 200 Z" fill="#FFF59D" />
+  <text x="300" y="360" font-family="'Mukta', sans-serif" font-size="28" font-weight="bold" fill="#FFF2A3" text-anchor="middle">श्री देवस्थान दर्शन छायाचित्र</text>
+  <text x="300" y="395" font-family="'Mukta', sans-serif" font-size="18" fill="#F0E0D0" text-anchor="middle">दैनिक आरती व उत्सव क्षणचित्रे</text>
+</svg>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="mr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}मुख्यपृष्ठ{% endblock %} | श्री देवस्थान विश्वस्त व्यवस्था</title>
+    <meta name="description" content="श्री देवस्थान विश्वस्त व्यवस्था, महाराष्ट्र - अधिकृत संकेतस्थळ. थेट आरती दर्शन, ऑनलाइन देणगी आणि संस्थान माहिती.">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts: Mukta & Noto Sans Devanagari -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Marathi Temple Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/marathi-theme.css') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- १. शीर्षपट्टी (Top Bar with Timings & Helpline) -->
+    <div class="temple-top-bar d-none d-md-block">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    <span class="me-3"><i class="bi bi-clock-fill text-warning me-1"></i> मंदिर दर्शन वेळ: सकाळी ०५:०० ते रात्री १०:००</span>
+                    <span><i class="bi bi-geo-alt-fill text-warning me-1"></i> तीर्थक्षेत्र देवस्थान, महाराष्ट्र</span>
+                </div>
+                <div class="col-md-5 text-end">
+                    <a href="tel:+912000000000" class="me-3"><i class="bi bi-telephone-fill me-1"></i> हेल्पलाईन: ०२२-१२३४५६७८</a>
+                    <a href="{{ url_for('admin.login') }}"><i class="bi bi-shield-lock-fill me-1"></i> प्रशासक प्रवेश</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- २. मुख्य हेडर व ब्रँडिंग (Header Brand Section) -->
+    <header class="temple-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 col-md-9 col-12 d-flex align-items-center">
+                    <a href="{{ url_for('public.index') }}" class="d-flex align-items-center text-decoration-none">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="श्री देवस्थान लोगो" class="temple-logo-img me-3">
+                        <div>
+                            <div class="temple-title">श्री देवस्थान विश्वस्त व्यवस्था</div>
+                            <div class="temple-subtitle">नोंदणी क्र. महा./१२३४/ट्रस्ट (महाराष्ट्र सार्वजनिक विश्वस्त व्यवस्था अधिनियम, १९५०)</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-3 col-12 text-md-end mt-2 mt-md-0 d-none d-md-block">
+                    <span class="badge bg-danger-subtle text-danger border border-danger p-2 fs-6">
+                        <i class="bi bi-broadcast me-1"></i> थेट प्रक्षेपण सुरू
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ३. मुख्य मराठी नेव्हिगेशन मेनू (Marathi Navbar) -->
+    <nav class="navbar navbar-expand-lg temple-navbar sticky-top">
+        <div class="container">
+            <button class="navbar-toggler text-white border-0 my-2" type="button" data-bs-toggle="collapse" data-bs-target="#templeNav" aria-controls="templeNav" aria-expanded="false" aria-label="मेनू उघडा">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+                <span class="ms-1 fw-bold text-white">मेनू</span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="templeNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.index' %}active{% endif %}" href="{{ url_for('public.index') }}">
+                            <i class="bi bi-house-door-fill me-1"></i> मुख्यपृष्ठ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.about_temple' %}active{% endif %}" href="{{ url_for('public.about_temple') }}">
+                            मंदिराची माहिती
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.trust' %}active{% endif %}" href="{{ url_for('public.trust') }}">
+                            संस्थेविषयी
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.live_aarti' %}active{% endif %}" href="{{ url_for('public.live_aarti') }}">
+                            थेट आरती दर्शन
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.donate' %}active{% endif %}" href="{{ url_for('public.donate') }}">
+                            देणगी
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.gallery' %}active{% endif %}" href="{{ url_for('public.gallery') }}">
+                            छायाचित्र संग्रह
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.updates' %}active{% endif %}" href="{{ url_for('public.updates') }}">
+                            बातम्या व उपक्रम
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'public.contact' %}active{% endif %}" href="{{ url_for('public.contact') }}">
+                            संपर्क
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- जलद कृती बटणे (Quick CTA Buttons in Nav) -->
+                <div class="d-flex align-items-center flex-wrap">
+                    <a href="{{ url_for('public.live_aarti') }}" class="btn nav-cta-btn btn-aarti-nav">
+                        <span class="live-badge" style="padding: 2px 6px; font-size: 0.75rem;">LIVE</span>
+                        थेट आरती
+                    </a>
+                    <a href="{{ url_for('public.donate') }}" class="btn nav-cta-btn btn-donate-nav">
+                        <i class="bi bi-heart-fill text-danger"></i>
+                        देणगी द्या
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ४. फ्लॅश संदेश (Flash Messages) -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show border-2" role="alert">
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="बंद करा"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- ५. मुख्य पृष्ठ आशय (Main Content Block) -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ६. छायाचित्र मॉडाल (Gallery Lightbox Modal) -->
+    <div class="modal fade" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="background-color: var(--color-dark-brown); color: #FFF; border: 2px solid var(--color-gold-primary);">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-warning" id="galleryModalTitle">श्री देवस्थान दर्शन</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="बंद करा"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img id="galleryModalImage" src="" alt="दर्शन छायाचित्र" class="img-fluid rounded" style="max-height: 75vh; width: auto;">
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <p class="mb-0 text-white-50">॥ ॐ नमः शिवाय ॥</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ७. पारंपारिक पादटीप (Temple Footer) -->
+    <footer class="temple-footer">
+        <div class="container">
+            <div class="row g-4">
+                <!-- मंदिर ओळख -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="लोगो" style="height: 50px;" class="me-2">
+                        <h5 class="mb-0 text-warning">श्री देवस्थान विश्वस्त व्यवस्था</h5>
+                    </div>
+                    <p class="text-light-50 small">
+                        महाराष्ट्रातील लाखो भाविकांचे श्रद्धास्थान असलेल्या श्री देवस्थान विश्वस्त व्यवस्थेचे हे अधिकृत दालन आहे. भक्ती, सामाजिक सेवा आणि पारदर्शकता ही आमची मूल्ये आहेत.
+                    </p>
+                    <div class="mt-3">
+                        <p class="mb-1"><i class="bi bi-geo-alt-fill text-warning me-2"></i> श्री देवस्थान संकुल, मुख्य मार्ग, तीर्थक्षेत्र, महाराष्ट्र - ४१२३०१</p>
+                        <p class="mb-1"><i class="bi bi-telephone-fill text-warning me-2"></i> दूरध्वनी: +९१ ०२२-१२३४५६७८ / ७९</p>
+                        <p class="mb-1"><i class="bi bi-envelope-fill text-warning me-2"></i> ई-मेल: info@templetrust.org</p>
+                    </div>
+                </div>
+
+                <!-- जलद दुवे -->
+                <div class="col-lg-2 col-md-6">
+                    <h5>जलद दुवे</h5>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('public.index') }}"><i class="bi bi-chevron-right text-warning me-1"></i> मुख्यपृष्ठ</a></li>
+                        <li><a href="{{ url_for('public.about_temple') }}"><i class="bi bi-chevron-right text-warning me-1"></i> मंदिराचा इतिहास</a></li>
+                        <li><a href="{{ url_for('public.trust') }}"><i class="bi bi-chevron-right text-warning me-1"></i> विश्वस्त मंडळ</a></li>
+                        <li><a href="{{ url_for('public.live_aarti') }}"><i class="bi bi-chevron-right text-warning me-1"></i> थेट आरती दर्शन</a></li>
+                        <li><a href="{{ url_for('public.donate') }}"><i class="bi bi-chevron-right text-warning me-1"></i> ऑनलाइन देणगी</a></li>
+                        <li><a href="{{ url_for('public.gallery') }}"><i class="bi bi-chevron-right text-warning me-1"></i> छायाचित्र संग्रह</a></li>
+                    </ul>
+                </div>
+
+                <!-- आरती व दर्शन वेळा -->
+                <div class="col-lg-3 col-md-6">
+                    <h5>दैनिक आरती वेळा</h5>
+                    <ul class="footer-links">
+                        <li><span class="text-warning">काकड आरती:</span> पहाटे ०५:३० वाजता</li>
+                        <li><span class="text-warning">महापूजा व अभिषेक:</span> सकाळी ०८:०० वाजता</li>
+                        <li><span class="text-warning">माध्यान्ह आरती:</span> दुपारी १२:०० वाजता</li>
+                        <li><span class="text-warning">धूपारती (संध्याकाळ):</span> संध्याकाळी ०७:०० वाजता</li>
+                        <li><span class="text-warning">शेजारती:</span> रात्री १०:०० वाजता</li>
+                    </ul>
+                </div>
+
+                <!-- पारदर्शकता व देणगी माहिती -->
+                <div class="col-lg-3 col-md-6">
+                    <h5>पारदर्शकता व मदत</h5>
+                    <p class="small text-light-50">
+                        संस्थानास दिलेल्या सर्व देणग्यांची अधिकृत संगणकीय पावती त्वरित उपलब्ध होते. 
+                    </p>
+                    <div class="d-grid gap-2 mb-3">
+                        <a href="{{ url_for('public.donate') }}" class="btn btn-temple-gold text-dark btn-sm py-2">
+                            <i class="bi bi-shield-check me-1"></i> सुरक्षित देणगी द्या
+                        </a>
+                        <a href="{{ url_for('public.trust') }}#documents" class="btn btn-outline-warning btn-sm py-2">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> वार्षिक लेखापरीक्षण अहवाल
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- तळातील कॉपीराइट पट्टी -->
+            <div class="footer-bottom text-center">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                        © २०२६ श्री देवस्थान विश्वस्त व्यवस्था. सर्व हक्क सुरक्षित.
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <span class="text-warning">॥ धर्मो रक्षति रक्षितः ॥</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Marathi JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
